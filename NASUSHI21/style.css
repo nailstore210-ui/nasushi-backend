@@ -1,0 +1,92 @@
+/* إعدادات عامة */
+body {
+  font-family: "Tahoma", sans-serif;
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* رأس الصفحة */
+header {
+  background-color: #d32f2f; /* أحمر يشبه السوشي */
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+/* المنيو */
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px;
+}
+
+.menu-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 10px;
+  padding: 15px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.menu-item h3 {
+  margin: 10px 0;
+  color: #d32f2f;
+}
+
+.menu-item button {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.menu-item button:hover {
+  background-color: #b71c1c;
+}
+
+/* الفورم */
+form {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 20px auto;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+form input, form button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+form button {
+  background-color: #388e3c; /* أخضر */
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #2e7d32;
+}
+
+/* الفوتر */
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 30px;
+}

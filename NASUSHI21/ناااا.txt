@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>NA_SUSHI_21</title>
+  <style>
+    body { font-family: Tahoma, sans-serif; background:#fff; margin:0; padding:0; direction:rtl; }
+    header { background:#b22222; color:white; text-align:center; padding:20px; }
+    .menu { display:flex; flex-wrap:wrap; justify-content:center; margin:20px; }
+    .item { background:#f9f9f9; border:1px solid #ddd; border-radius:8px; width:280px; margin:10px; padding:10px; text-align:center; }
+    .item img { width:100%; border-radius:8px; }
+    .price { color:#b22222; font-weight:bold; margin:5px; }
+    select { padding:5px; margin-top:5px; }
+    button { background:#b22222; color:white; border:none; padding:8px; margin-top:8px; border-radius:5px; cursor:pointer; }
+    button:hover { background:#8b1a1a; }
+    #cart { background:#f1f1f1; padding:15px; margin:20px; border-radius:8px; }
+    #notification { background:#4CAF50; color:white; padding:15px; text-align:center; display:none; }
+    #points { text-align:center; margin:20px; font-size:18px; }
+    form { background:#f9f9f9; margin:20px auto; padding:20px; border-radius:8px; width:300px; }
+    form input, form select { width:100%; padding:8px; margin:8px 0; border:1px solid #ddd; border-radius:5px; }
+    #langSelect { margin:10px; padding:5px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1 id="title">NA_SUSHI_21 - الطعام الياباني بأيادي جزائرية</h1>
+  <p id="subtitle">0792106084 | سكيكدة / فلفلة</p>
+  <select id="langSelect" onchange="changeLang(this.value)">
+    <option value="ar">العربية</option>
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+  </select>
+</header>
+
+<div id="notification"></div>
+<div id="points">رصيد نقاطك: 0 🎁</div>
+
+
+<!-- 🍣 المنيو -->
+<section class="menu">
+
+  <!-- California Roll -->
+  <div class="item">
+    <img src="images/californiaroll.jpg" alt="California Roll" width="200">
+    <h3>California Roll</h3>
+    <p>الأرز من الخارج، النوري من الداخل، الحشو خيار + جبن + جزر + أفوكادو.</p>
+    <select onchange="updatePrice('California Roll', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="THON">تونة - 1090DA</option>
+      <option value="POULET">دجاج كريسبي - 1190DA</option>
+      <option value="CREVETTE">كروفات - 1390DA</option>
+      <option value="VEGI">خضار - 1190DA</option>
+      <option value="SAUMON">سلمون - 1390DA</option>
+      <option value="SURIMI">سوريمي - 1390DA</option>
+    </select>
+    <p class="price" id="California Roll-price">السعر: -</p>
+    <button onclick="addToCart('California Roll')">أضف للسلة</button>
+  </div>
+
+  <!-- Crispy Roll -->
+  <div class="item">
+    <img src="images/crispy.jpg" alt="California Roll" width="200">
+    <h3>Crispy Roll</h3>
+    <p>نفس الفوتوماكي لكن مقرمش، يقلى مع فتات التيمبورا.</p>
+    <select onchange="updatePrice('Crispy Roll', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="THON">تونة - 1140DA</option>
+      <option value="POULET">دجاج كريسبي - 1240DA</option>
+      <option value="CREVETTE">كروفات - 1440DA</option>
+      <option value="SAUMON">سلمون - 1440DA</option>
+      <option value="SURIMI">سوريمي - 1440DA</option>
+    </select>
+    <p class="price" id="Crispy Roll-price">السعر: -</p>
+    <button onclick="addToCart('Crispy Roll')">أضف للسلة</button>
+  </div>
+
+  <!-- Futomaki -->
+  <div class="item">
+    <img src="images/futomaki.jpg" alt="California Roll" width="200">
+    <h3>Futomaki</h3>
+    <p>رول أكبر بحشوات متنوعة مثل الجبن والخيار والجزر.</p>
+    <select onchange="updatePrice('Futomaki', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="THON">تونة - 1090DA</option>
+      <option value="POULET">دجاج كريسبي - 1190DA</option>
+      <option value="CREVETTE">كروفات - 1390DA</option>
+      <option value="VEGI">خضار - 1190DA</option>
+      <option value="SAUMON">سلمون - 1390DA</option>
+      <option value="SURIMI">سوريمي - 1390DA</option>
+    </select>
+    <p class="price" id="Futomaki-price">السعر: -</p>
+    <button onclick="addToCart('Futomaki')">أضف للسلة</button>
+  </div>
+
+  <!-- Hosomaki -->
+  <div class="item">
+    <img src="images/hosomaki.jpg" alt="California Roll" width="200">
+    <h3>Hosomaki</h3>
+    <p>رول صغير بورق النوري وحشوة واحدة فقط.</p>
+    <select onchange="updatePrice('Hosomaki', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="THON">تونة - 990DA</option>
+      <option value="POULET">دجاج كريسبي - 990DA</option>
+      <option value="CREVETTE">كروفات - 1190DA</option>
+      <option value="AVOCAT">أفوكادو - 1090DA</option>
+      <option value="SAUMON">سلمون - 1190DA</option>
+      <option value="SURIMI">سوريمي - 1150DA</option>
+    </select>
+    <p class="price" id="Hosomaki-price">السعر: -</p>
+    <button onclick="addToCart('Hosomaki')">أضف للسلة</button>
+  </div>
+
+<!-- Dragon Roll -->
+  <div class="item">
+    <img src="images/dragonroll.jpg" alt="California Roll" width="200">
+    <h3>Dragon Roll</h3>
+    <p>رول مع شرائح أفوكادو فوقه ليعطي شكل التنين.</p>
+    <select onchange="updatePrice('Dragon Roll', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="THON">تونة - 1690DA</option>
+      <option value="POULET">دجاج كريسبي - 1690DA</option>
+      <option value="CREVETTE">كروفات - 1890DA</option>
+      <option value="SAUMON">سلمون - 1890DA</option>
+      <option value="SURIMI">سوريمي - 1890DA</option>
+    </select>
+    <p class="price" id="Dragon Roll-price">السعر: -</p>
+    <button onclick="addToCart('Dragon Roll')">أضف للسلة</button>
+  </div>
+
+  <!-- Nigiri -->
+  <div class="item">
+    <img src="images/nigiri.jpg" alt="California Roll" width="200">
+    <h3>Nigiri</h3>
+    <p>كرة أرز مضغوطة مع شريحة سلمون أو كروفات أو أفوكادو.</p>
+    <select onchange="updatePrice('Nigiri', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="CREVETTE">كروفات - 1490DA</option>
+      <option value="SAUMON">سلمون - 1490DA</option>
+      <option value="AVOCAT">أفوكادو - 1290DA</option>
+    </select>
+    <p class="price" id="Nigiri-price">السعر: -</p>
+    <button onclick="addToCart('Nigiri')">أضف للسلة</button>
+  </div>
+
+  <!-- Gyoza -->
+  <div class="item">
+    <img src="images/gyoza" alt="California Roll" width="200">
+    <h3>Gyoza</h3>
+    <p>رافيولي يابانية محشوة باللحم أو الدجاج أو الكروفات، مقرمشة من الأسفل وطرية من الأعلى.</p>
+    <select onchange="updatePrice('Gyoza', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="POULET">دجاج - 590DA</option>
+      <option value="VIANDE">لحم - 790DA</option>
+      <option value="CREVETTE">كروفات - 990DA</option>
+    </select>
+    <p class="price" id="Gyoza-price">السعر: -</p>
+    <button onclick="addToCart('Gyoza')">أضف للسلة</button>
+  </div>
+
+  <!-- Crunchy Roll -->
+  <div class="item">
+    <img src="images/crunchy.jpg" alt="California Roll" width="200">
+    <h3>Crunchy Roll</h3>
+    <p>كاليفورنيا رول لكن مقرمش أكثر، يقلى مع خليط البيض والفرينة وفتات التيمبورا.</p>
+    <select onchange="updatePrice('Crunchy Roll', this.value)">
+      <option value="">اختر الحشو</option>
+      <option value="THON">تونة - 1140DA</option>
+      <option value="POULET">دجاج كريسبي - 1240DA</option>
+      <option value="CREVETTE">كروفات - 1440DA</option>
+      <option value="SAUMON">سلمون - 1440DA</option>
+      <option value="SURIMI">سوريمي - 1440DA</option>
+    </select>
+    <p class="price" id="Crunchy Roll-price">السعر: -</p>
+    <button onclick="addToCart('Crunchy Roll')">أضف للسلة</button>
+  </div>
+
+</section>
+
+
+<!-- 📝 نموذج الزبون -->
+<form id="orderForm" onsubmit="confirmOrder(event)">
+  <h3 id="formTitle">📝 بيانات الزبون</h3>
+  <input type="text" id="custName" placeholder="الاسم" required>
+  <input type="tel" id="custPhone" placeholder="رقم الهاتف (10 أرقام)" required>
+  <span id="phoneError" style="color:red; display:none;">⚠️ رقم الهاتف يجب أن يكون 10 أرقام صحيحة فقط!</span>
+  <input type="text" id="custAddress" placeholder="العنوان" required>
+  <select id="custArea" required>
+    <option value="">اختر المنطقة</option>
+    <option value="تفاحي">تفاحي</option>
+    <option value="adll فلفلة">adll فلفلة</option>
+    <option value="الفتوي">الفتوي</option>
+    <option value="قرية لعرايس">قرية لعرايس</option>
+    <option value="بلاطان">بلاطان</option>
+    <option value="القرية">القرية</option>
+    <option value="الغطسة">الغطسة</option>
+    <option value="ليابيي">ليابيي</option>
+    <option value="شاطئ 8">شاطئ 8</option>
+    <option value="شاطئ 10">شاطئ 10</option>
+    <option value="الماناج">الماناج</option>
+    <option value="شاطئ 7">شاطئ 7</option>
+    <option value="القرية السياحية">القرية السياحية</option>
+    <option value="مارينا دور">مارينا دور</option>
+    <option value="سانتيفي">سانتيفي</option>
+    <option value="بوزعرورة">بوزعرورة</option>
+    <option value="كوسيدار">كوسيدار</option>
+    <option value="جان دارك">جان دارك</option>
+    <option value="لابيسين">لابيسين</option>
+    <option value="33">33</option>
+    <option value="حمادي كرومة">حمادي كرومة</option>
+    <option value="فالي">فالي</option>
+    <option value="لاسيا">لاسيا</option>
+    <option value="ليزالي">ليزالي</option>
+    <option value="لبلاد">لبلاد</option>
+    <option value="كامي">كامي</option>
+    <option value="مرج الديب">مرج الديب</option>
+    <option value="بوبعلى">بوبعلى</option>
+    <option value="فوبور">فوبور</option>
+    <option value="واد الوحش">واد الوحش</option>
+    <option value="مسيون 1">مسيون 1</option>
+    <option value="مسيون 2">مسيون 2</option>
+    <option value="سانسو">سانسو</option>
+    <option value="سيسال">سيسال</option>
+    <option value="فاووث">فاووث</option>
+    <option value="ليباتيمو الشناوة">ليباتيمو الشناوة</option>
+    <option value="صالح بولكروة">صالح بولكروة</option>
+    <option value="زفزاف 1">زفزاف 1</option>
+    <option value="زفزاف 2">زفزاف 2</option>
+    <option value="الجامعة">الجامعة</option>
+    <option value="الاقامات الجامعية للإناث">الاقامات الجامعية للإناث</option>
+    <option value="الاقامات الجامعية للذكور">الاقامات الجامعية للذكور</option>
+    <option value="الحدائق">الحدائق</option>
+    <option value="غير ذلك">غير ذلك</option>
+  </select>
+    <input type="text" id="custTime" placeholder="وقت التوصيل" required>
+  <button type="submit" id="confirmBtn">تأكيد الطلب</button>
+</form> 
+
+<!-- 🛒 السلة -->
+<div id="cart">
+  <h3 id="cartTitle">🛒 سلة المشتريات</h3>
+  <ul id="cartItems"></ul>
+  <p><strong id="cartTotalLabel">المجموع: <span id="cartTotal">0</span> DA</strong></p>
+  <p><strong id="deliveryLabel">سعر التوصيل: <span id="deliveryPrice">0</span> DA</strong></p>
+  <p id="deliveryMessage" style="color:green; font-weight:bold;"></p>
+  <p><strong id="finalTotalLabel">المجموع الكلي: <span id="finalTotal">0</span> DA</strong></p>
+</div>
+
+ <!-- 🪙 رصيد النقاط -->
+<div id="pointsSection">
+  <p>🪙 رصيدك الحالي: <span id="pointsBalance">0</span> نقطة</p>
+  <button id="checkPoints">🔄 تحديث رصيد النقاط</button>
+</div>
+
+
+<!-- 📝 ملخص الطلب النهائي -->
+<div id="orderSummary" style="background:#f1f1f1; padding:20px; margin:20px; border-radius:8px; display:none;">
+  <h3>📋 ملخص الطلب</h3>
+  <p id="summaryItems"></p>
+  <p id="summaryDelivery"></p>
+  <p id="summaryTotal"></p>
+  <p id="summaryPoints"></p>
+</div>
+
+<script>
+
+   let cart = [];
+  let selectedPrices = {};
+  let points = 0;
+  let currentLang = "ar";
+
+  const translations = {
+    ar: {title:"NATTSUSHI - الطعام الياباني", cartTitle:"🛒 سلة المشتريات", cartTotal:"المجموع: ", formTitle:"📝 بيانات الزبون", confirmBtn:"تأكيد الطلب", notification:"✅ تم تسجيل طلبك: ", points:"رصيد نقاطك: "},
+    fr: {title:"NATTSUSHI - Cuisine Japonaise", cartTitle:"🛒 Panier", cartTotal:"Total: ", formTitle:"📝 Informations du client", confirmBtn:"Confirmer la commande", notification:"✅ Votre commande est enregistrée: ", points:"Vos points fidélité: "},
+    en: {title:"NATTSUSHI - Japanese Food", cartTitle:"🛒 Shopping Cart", cartTotal:"Total: ", formTitle:"📝 Customer Information", confirmBtn:"Confirm Order", notification:"✅ Your order has been placed: ", points:"Your loyalty points: "}
+  };
+
+  function updatePrice(item, choice) {
+    let price = 0;
+    if(item === "California Roll"){
+      if(choice === "THON") price = 1090;
+      else if(choice === "POULET") price = 1190;
+      else if(choice === "CREVETTE") price = 1390;
+    }
+    if(item === "Crispy Roll"){
+      if(choice === "THON") price = 1140;
+      else if(choice === "POULET") price = 1240;
+      else if(choice === "CREVETTE") price = 1440;
+      else if(choice === "SAUMON") price = 1440;
+      else if(choice === "SURIMI") price = 1440;
+    }
+    if(item === "Futomaki"){
+      if(choice === "THON") price = 1090;
+      else if(choice === "POULET") price = 1190;
+      else if(choice === "CREVETTE") price = 1390;
+      else if(choice === "VEGI") price = 1190;
+      else if(choice === "SAUMON") price = 1390;
+      else if(choice === "SURIMI") price = 1390;
+    }
+    if(item === "Hosomaki"){
+      if(choice === "THON") price = 990;
+      else if(choice === "POULET") price = 990;
+      else if(choice === "CREVETTE") price = 1190;
+      else if(choice === "AVOCAT") price = 1090;
+      else if(choice === "SAUMON") price = 1190;
+      else if(choice === "SURIMI") price = 1150;
+    }
+    if(item === "Dragon Roll"){
+      if(choice === "THON") price = 1690;
+      else if(choice === "POULET") price = 1690;
+      else if(choice === "CREVETTE") price = 1890;
+      else if(choice === "SAUMON") price = 1890;
+      else if(choice === "SURIMI") price = 1890;
+    }
+    if(item === "Nigiri"){
+      if(choice === "CREVETTE") price = 1490;
+      else if(choice === "SAUMON") price = 1490;
+      else if(choice === "AVOCAT") price = 1290;
+    }
+    if(item === "Gyoza"){
+      if(choice === "POULET") price = 590;
+      else if(choice === "VIANDE") price = 790;
+      else if(choice === "CREVETTE") price = 990;
+    } 
+    if(item === "Crunchy Roll"){
+      if(choice === "THON") price = 1140;
+      else if(choice === "POULET") price = 1240;
+      else if(choice === "CREVETTE") price = 1440;
+      else if(choice === "SAUMON") price = 1440;
+      else if(choice === "SURIMI") price = 1440;
+    }
+    document.getElementById(item+"-price").innerText = "السعر: " + price + " DA";
+    selectedPrices[item] = price;
+  }
+
+
+  function addToCart(item){
+    let price = selectedPrices[item];
+    if(!price || price === 0){
+      alert("⚠️ اختر الحشو أولاً!");
+      return;
+    }
+    cart.push({name:item, price:price});
+    updateCart();
+  }
+
+  function removeItem(index){
+    cart.splice(index,1);
+    updateCart();
+  }
+
+  function getDeliveryPrice(area){
+    const free = ["تفاحي","adll فلفلة","الفتوي","قرية لعرايس"];
+    if(free.includes(area)) return 0;
+
+    const hundred = ["بلاطان","القرية","الغطسة","ليابيي"];
+    if(hundred.includes(area)) return 100;
+
+    const oneFifty = ["شاطئ 8","شاطئ 10","الماناج"];
+    if(oneFifty.includes(area)) return 150;
+
+    const twoHundred = ["شاطئ 7","القرية السياحية","مارينا دور","سانتيفي","الجامعة","الاقامات الجامعية للإناث","الاقامات الجامعية للذكور","الحدائق"];
+    if(twoHundred.includes(area)) return 200;
+
+    const twoFifty = ["بوزعرورة","كوسيدار","جان دارك","لابيسين","adll بوزعرورة"];
+    if(twoFifty.includes(area)) return 250;
+
+    const threeHundred = ["33","حمادي كرومة","فالي","لاسيا","ليزالي","لبلاد","كامي","مرج الديب","بوبعلى","فوبور","واد الوحش","مسيون 1","مسيون 2","سانسو","سيسال","فاووث","ليباتيمو الشناوة","صالح بولكروة","زفزاف 1","زفزاف 2"];
+    if(threeHundred.includes(area)) return 300;
+
+    return -1;
+  }
+
+  function updateCart(){
+    const cartList = document.getElementById("cartItems");
+    cartList.innerHTML = "";
+    let total = 0;
+    cart.forEach((item, index)=>{
+      total += item.price;
+      cartList.innerHTML += `<li>${item.name} - ${item.price} DA 
+        <button onclick="removeItem(${index})">❌</button></li>`;
+    });
+    document.getElementById("cartTotal").innerText = total;
+
+    const area = document.getElementById("custArea") ? document.getElementById("custArea").value : "";
+    let deliveryPrice = getDeliveryPrice(area);
+    let deliveryMessage = "";
+
+    if(deliveryPrice === 0 && area !== ""){
+      deliveryMessage = "🎉 تهانينا، التوصيل مجاني!";
+    }
+    if(deliveryPrice === -1){
+      deliveryPrice = 0;
+      deliveryMessage = "⚠️ المنطقة غير مدعومة، يرجى التواصل معنا.";
+    }
+
+    document.getElementById("deliveryPrice").innerText = deliveryPrice;
+    document.getElementById("deliveryMessage").innerText = deliveryMessage;
+    document.getElementById("finalTotal").innerText = total + deliveryPrice;
+  }
+
+async function confirmOrder(event){
+  event.preventDefault();
+  const phone = document.getElementById("custPhone").value;
+  const phoneError = document.getElementById("phoneError");
+  const area = document.getElementById("custArea").value;
+
+  if(!/^[0-9]{10}$/.test(phone)){
+    phoneError.style.display = "block";
+    return;
+  } else {
+    phoneError.style.display = "none";
+  }
+
+  if(cart.length === 0){
+    alert("⚠️ السلة فارغة!");
+    return;
+  }
+
+  let deliveryPrice = getDeliveryPrice(area);
+  if(deliveryPrice === -1){
+    alert("⚠️ المنطقة غير مدعومة، يرجى التواصل معنا عبر واتساب أو فيسبوك/إنستغرام.");
+    return;
+  }
+
+  let total = cart.reduce((sum, item)=> sum + item.price, 0);
+  total += deliveryPrice;
+
+  // نبني الطلبية
+  const order = {
+    name: document.getElementById("custName").value,
+    phone: phone,
+    area: area,
+    total: total,
+    products: cart,
+    time: new Date().toLocaleString(),
+    usedPoints: parseInt(document.getElementById("usedPoints")?.value) || 0
+  };
+
+  try {
+    const response = await fetch("http://localhost:3000/order", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(order)
+    });
+
+    const result = await response.json();
+
+    if(result.status === "success"){
+      alert(`✅ تم إرسال الطلب! رقم الطلب: ${result.orderId}`);
+      document.getElementById("pointsBalance").textContent = result.newBalance;
+
+      // 📝 عرض الملخص المفصل لتحت الصفحة مع أسماء المنتجات
+      document.getElementById("orderSummary").style.display = "block";
+
+      let productNames = cart.map(item => item.name + " (" + item.price + " DA)").join("، ");
+      document.getElementById("summaryItems").innerText = "المنتجات المختارة: " + productNames;
+      document.getElementById("summaryDelivery").innerText = "سعر التوصيل: " + deliveryPrice + " DA";
+      document.getElementById("summaryTotal").innerText = "المجموع الكلي مع التوصيل: " + total + " DA";
+      document.getElementById("summaryPoints").innerText = "🪙 رصيدك الحالي: " + result.newBalance;
+
+      // تفريغ السلة
+      cart = [];
+      updateCart();
+      document.getElementById("orderForm").reset();
+    } else {
+      alert("❌ صار مشكل في إرسال الطلب.");
+    }
+  } catch(err){
+    console.error("خطأ في الاتصال بالسيرفر:", err);
+    alert("⚠️ السيرفر ما راهوش يرد.");
+  }
+}
+
+  function changeLang(lang){
+  currentLang = lang;
+
+  // تحديث العناوين حسب اللغة
+  document.getElementById("title").innerText = translations[lang].title;
+  document.getElementById("cartTitle").innerText = translations[lang].cartTitle;
+  document.getElementById("formTitle").innerText = translations[lang].formTitle;
+  document.getElementById("confirmBtn").innerText = translations[lang].confirmBtn;
+
+  // تحديث رصيد النقاط (نستعمل pointsBalance اللي موجود في الصفحة)
+  document.getElementById("pointsSection").querySelector("p").innerText =
+    translations[lang].points + document.getElementById("pointsBalance").innerText + " 🎁";
+
+  // تحديث المجموع
+  document.getElementById("cartTotalLabel").innerText =
+    translations[lang].cartTotal + document.getElementById("cartTotal").innerText + " DA";
+}
+</script>
+<script src="script.js"></script>
+
+</body>
+</html>
