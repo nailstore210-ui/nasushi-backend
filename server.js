@@ -1,14 +1,14 @@
 const express = require("express");
 const fs = require("fs");
-const PDFDocument = require("pdfkit");
 const path = require("path");
+const PDFDocument = require("pdfkit");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 app.use(express.static("NASUSHI21"));
 
-// Twilio (يتفعل فقط إذا عندك المتغيرات)
+// إعداد Twilio (يتفعل فقط إذا المتغيرات موجودة)
 let client = null;
 if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
   client = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
   res.send("✅ Nasushi Backend is running!");
 });
 
-// دوال العملاء
+// 🗂️ دوال العملاء
 function readCustomers() {
   if (!fs.existsSync("customers.json")) return {};
   return JSON.parse(fs.readFileSync("customers.json", "utf8"));
@@ -35,10 +35,11 @@ app.post("/order", async (req, res) => {
     const orderId = "ORD-" + Date.now();
     order.id = orderId;
 
-    // نقاط
+    // 🪙 النقاط
     const usedPoints = Number(order.usedPoints) || 0;
     let customers = readCustomers();
     const customerKey = order.phone;
+
     if (!customers[customerKey]) {
       customers[customerKey] = { name: order.name, phone: order.phone, points: 0 };
     }
@@ -61,16 +62,17 @@ app.post("/order", async (req, res) => {
     order.pointsUsed = usedPoints;
     order.pointsBalance = currentPoints;
 
+    // 🗂️ تخزين الطلبية
     fs.appendFileSync("orders.txt", JSON.stringify(order) + "\n", "utf8");
     writeCustomers(customers);
 
-    // Twilio (يتفعل فقط إذا client موجود)
+    // 📲 إرسال واتساب إذا Twilio موجود
     if (client) {
       try {
         await client.messages.create({
           from: "whatsapp:+14155238886",
           to: "whatsapp:+213792106084",
-          body: `طلب جديد 🛒 رقم الطلب: ${order.id}`
+          body: `طلب جديد 🛒 رقم الطلب: ${order.id}\n👤 الاسم: ${order.name}\n📞 الهاتف: ${order.phone}\n💰 المجموع: ${order.total} DA`
         });
         console.log("✅ تم إرسال الطلب إلى واتساب");
       } catch (err) {
@@ -78,13 +80,13 @@ app.post("/order", async (req, res) => {
       }
     }
 
-    // توليد PDF
+    // ✅ توليد فاتورة PDF
     const doc = new PDFDocument();
     const filePath = path.join(__dirname, `invoice-${orderId}.pdf`);
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
 
-    // شعار إذا موجود
+    // 🖼️ شعار إذا موجود
     const logoPath = path.join(__dirname, "logo.png");
     if (fs.existsSync(logoPath)) {
       doc.image(logoPath, { fit: [100, 100], align: "center", valign: "top" });
@@ -94,8 +96,25 @@ app.post("/order", async (req, res) => {
     doc.text(`🆔 رقم الطلب: ${orderId}`);
     doc.text(`👤 الاسم: ${order.name}`);
     doc.text(`📞 الهاتف: ${order.phone}`);
-    doc.text(`💰 المجموع: ${order.total} DA`);
+    doc.text(`📍 المنطقة: ${order.area}`);
+    doc.text(`🕒 الوقت: ${order.time}`);
+    doc.moveDown();
+
+    doc.fontSize(16).text("📦 المنتجات:", { underline: true });
+    order.products.forEach(p => {
+      doc.text(`${p.name} : ${p.price} DA`);
+    });
+
+    doc.moveDown();
+    doc.fontSize(14).text(`💰 المجموع: ${order.total} DA`);
+    doc.text(`🪙 النقاط المستعملة: ${order.pointsUsed}`);
     doc.text(`🪙 الرصيد الجديد: ${order.pointsBalance}`);
+
+    doc.moveDown(2);
+    doc.fontSize(12).text("📞 للتواصل:   07 92 10 60 84  ", { align: "center" });
+    doc.text("📸 تابعنا على إنستغرام: @nasushi21", { align: "center" });
+    doc.text("🌐 موقعنا: www.nasushi21.com", { align: "center" });
+
     doc.end();
 
     stream.on("finish", () => {
