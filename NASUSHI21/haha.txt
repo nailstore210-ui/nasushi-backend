@@ -69,7 +69,7 @@
   <div class="header-content">
     <!-- اللوغو -->
     <div class="header-logo">
-      <img src="images/logo.png" alt="شعار Na_Sushi_21">
+      <img src="\logo.png" alt="شعار Na_Sushi_21">
     </div>
     <!-- النصوص -->
     <div class="header-text">
