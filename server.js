@@ -14,6 +14,11 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 
+// 🏠 Route رئيسي للتأكد أن السيرفر يخدم
+app.get("/", (req, res) => {
+  res.send("✅ Nasushi Backend is running!");
+});
+
 // 🗂️ دوال مساعدة لملف العملاء
 function readCustomers() {
   if (!fs.existsSync("customers.json")) return {};
@@ -164,4 +169,5 @@ app.get("/points/:phone", (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("🚀 السيرفر شغال على http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

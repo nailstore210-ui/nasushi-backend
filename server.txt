@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const twilio = require("twilio");
-const PDFDocument = require("pdfkit");   // ✅ مكتبة توليد PDF
+const PDFDocument = require("pdfkit");
 const path = require("path");
 
 const app = express();
@@ -9,11 +9,15 @@ app.use(express.json());
 app.use(express.static("NASUSHI21"));
 
 // إعداد Twilio
-
 require("dotenv").config();
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = require("twilio")(accountSid, authToken);    
+const client = require("twilio")(accountSid, authToken);
+
+// 🏠 Route رئيسي للتأكد أن السيرفر يخدم
+app.get("/", (req, res) => {
+  res.send("✅ Nasushi Backend is running!");
+});
 
 // 🗂️ دوال مساعدة لملف العملاء
 function readCustomers() {
@@ -93,67 +97,64 @@ app.post("/order", (req, res) => {
     console.error("❌ خطأ في إرسال واتساب:", err);
   });
 
-// ✅ توليد فاتورة PDF مع شعار وتذييل
-const doc = new PDFDocument();
-const filePath = path.join(__dirname, `invoice-${orderId}.pdf`);
-const stream = fs.createWriteStream(filePath);
-doc.pipe(stream);
+  // ✅ توليد فاتورة PDF
+  const doc = new PDFDocument();
+  const filePath = path.join(__dirname, `invoice-${orderId}.pdf`);
+  const stream = fs.createWriteStream(filePath);
+  doc.pipe(stream);
 
-// 🖼️ إضافة شعار المطعم
-doc.image(path.join(__dirname, "logo.png"), {
-  fit: [100, 100],
-  align: "center",
-  valign: "top"
+  // 🖼️ شعار المطعم
+  doc.image(path.join(__dirname, "logo.png"), {
+    fit: [100, 100],
+    align: "center",
+    valign: "top"
+  });
+  doc.moveDown(2);
+
+  doc.fontSize(20).text("فاتورة الطلبية", { align: "center" });
+  doc.moveDown();
+  doc.fontSize(14).text(`🆔 رقم الطلب: ${orderId}`);
+  doc.text(`👤 الاسم: ${order.name}`);
+  doc.text(`📞 الهاتف: ${order.phone}`);
+  doc.text(`📍 المنطقة: ${order.area}`);
+  doc.text(`🕒 الوقت: ${order.time}`);
+  doc.moveDown();
+
+  // 📦 المنتجات
+  doc.fontSize(16).text("📦 المنتجات:", { underline: true });
+  doc.moveDown();
+
+  order.products.forEach(p => {
+    doc.text(`${p.name} : ${p.price} DA`);
+  });
+
+  doc.moveDown();
+  doc.fontSize(14).text(`💰 المجموع: ${order.total} DA`);
+  doc.text(`🪙 النقاط المستعملة: ${order.pointsUsed}`);
+  doc.text(`🪙 الرصيد الجديد: ${order.pointsBalance}`);
+
+  // ✅ التذييل
+  doc.moveDown(4);
+  doc.fontSize(12).text("📞 للتواصل: 0792 106 084", { align: "center" });
+  doc.text("📸 تابعنا على إنستغرام: @nattsushi", { align: "center" });
+  doc.text("🌐 موقعنا: www.nattsushi.com", { align: "center" });
+
+  doc.end();
+
+  // ✅ لازم نستنى حتى يخلص توليد الملف
+  stream.on("finish", () => {
+    // نوجه مباشرة لرابط الفاتورة
+    res.redirect(`/invoice/${orderId}`);
+  });
 });
-doc.moveDown(2);
 
-doc.fontSize(20).text("فاتورة الطلبية", { align: "center" });
-doc.moveDown();
-doc.fontSize(14).text(`🆔 رقم الطلب: ${orderId}`);
-doc.text(`👤 الاسم: ${order.name}`);
-doc.text(`📞 الهاتف: ${order.phone}`);
-doc.text(`📍 المنطقة: ${order.area}`);
-doc.text(`🕒 الوقت: ${order.time}`);
-doc.moveDown();
-
-// 📦 جدول المنتجات
-doc.fontSize(16).text("📦 المنتجات:", { underline: true });
-doc.moveDown();
-
-doc.fontSize(12).text("المنتج", 50, doc.y, { continued: true });
-doc.text("السعر (DA)", 300);
-doc.moveDown();
-
-doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
-doc.moveDown();
-
-order.products.forEach(p => {
-  doc.text(p.name, 50, doc.y, { continued: true });
-  doc.text(p.price.toString(), 300);
-});
-
-doc.moveDown();
-doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
-doc.moveDown();
-
-doc.fontSize(14).text(`💰 المجموع: ${order.total} DA`);
-doc.text(`🪙 النقاط المستعملة: ${order.pointsUsed}`);
-doc.text(`🪙 الرصيد الجديد: ${order.pointsBalance}`);
-
-// ✅ تذييل الفاتورة
-doc.moveDown(4);
-doc.fontSize(12).text("📞 للتواصل: 0792 106 084", { align: "center" });
-doc.text("📸 تابعنا على إنستغرام: @nattsushi", { align: "center" });
-doc.text("🌐 موقعنا: www.nattsushi.com", { align: "center" });
-
-doc.end();
-
-stream.on("finish", () => {
-  res.send({
-    status: "success",
-    orderId,
-    newBalance: currentPoints,
-    invoice: `invoice-${orderId}.pdf`
+// ✅ Route لعرض الفاتورة PDF مباشرة
+app.get("/invoice/:id", (req, res) => {
+  const filePath = path.join(__dirname, `invoice-${req.params.id}.pdf`);
+  res.sendFile(filePath, {
+    headers: {
+      "Content-Type": "application/pdf"
+    }
   });
 });
 
@@ -168,4 +169,5 @@ app.get("/points/:phone", (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("🚀 السيرفر شغال على http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

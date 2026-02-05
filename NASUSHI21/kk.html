@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>NA_SUSHI_21</title>
   <style>
-    body { 
+      body { 
       font-family: Tahoma, sans-serif; 
       background:#fff; 
       margin:0; 
@@ -17,59 +17,64 @@
       background:#b22222; 
       color:white; 
       display:flex; 
-      justify-content:space-between; /* اللوغو يمين والكتابة يسار */
+      justify-content:flex-end; /* كلشي على اليمين */
       align-items:center; 
       padding:20px; 
+      gap:20px; /* مسافة بين اللوغو والنص */
     }
     header img { 
-      width:180px; 
-      margin-left:20px; 
+      width:180px; /* اللوغو أكبر شوي */
     }
-    header div { 
-      text-align:right; 
-    }
+    header div { text-align:right; }
 
-    .menu { display:flex; flex-wrap:wrap; justify-content:center; margin:20px; }
-    .item { background:#f9f9f9; border:1px solid #ddd; border-radius:8px; width:280px; margin:10px; padding:10px; text-align:right; }
+    /* ✅ المنيو يبقى في بلاصتو */
+    .menu { 
+      display:flex; 
+      flex-wrap:wrap; 
+      justify-content:center; 
+      margin:20px; 
+    }
+    .item { 
+      background:#f9f9f9; 
+      border:1px solid #ddd; 
+      border-radius:8px; 
+      width:280px; 
+      margin:10px; 
+      padding:10px; 
+      text-align:center; 
+    }
     .item img { width:100%; border-radius:8px; }
     .price { color:#b22222; font-weight:bold; margin:5px; }
     select { padding:5px; margin-top:5px; }
     button { background:#b22222; color:white; border:none; padding:8px; margin-top:8px; border-radius:5px; cursor:pointer; }
     button:hover { background:#8b1a1a; }
-    #cart { background:#f1f1f1; padding:15px; margin:20px; border-radius:8px; }
-    #notification { background:#4CAF50; color:white; padding:15px; text-align:center; display:none; }
-    #points { text-align:center; margin:20px; font-size:18px; }
-    form { background:#f9f9f9; margin:20px auto; padding:20px; border-radius:8px; width:300px; }
-    form input, form select { width:100%; padding:8px; margin:8px 0; border:1px solid #ddd; border-radius:5px; }
-    #langSelect { margin:10px; padding:5px; }
 
     /* ✅ الفوتر */
     footer { 
       background:#b22222; 
       color:white; 
       display:flex; 
-      justify-content:space-between; /* نص يسار وبطاقة يمين */
+      justify-content:flex-end; /* كلشي على اليمين */
       align-items:center; 
       padding:20px; 
       margin-top:40px; 
+      gap:20px; /* مسافة بين النص والصورة */
     }
     footer img { 
-      width:300px; 
-      margin-left:20px; 
+      width:300px; /* البطاقة أكبر شوي */
+      border-radius:8px; 
+      margin-left:20px;
     }
-    footer div { 
-      text-align:right; 
-    }
+    footer div { text-align:right; }
   </style>
 </head>
 <body>
-
 
 <header>
   <div class="header-content">
     <!-- اللوغو -->
     <div class="header-logo">
-      <img src="images/logo.png" alt="شعار Na_Sushi_21">
+      <img src="images/logo.png" alt="شعار NA Sushi">
     </div>
     <!-- النصوص -->
     <div class="header-text">
@@ -231,7 +236,7 @@
     <img src="images/futomakichesse.png" alt="Futomaki chesse" width="200">
     <h3>Futomaki chesse (8 piece)</h3>
     <p>نفس الفوطوماكي لكن يوضع فوقه قطع جبن الهمبرغر تكون ذايبة شوي.</p>
-    <select onchange="updatePrice('Futomaki chesse', this.value)">
+    <select onchange="updatePrice('Crunchy Roll', this.value)">
       <option value="">اختر الحشو</option>
       <option value="THON">تونة - 1190DA</option>
       <option value="POULET CRISPY">دجاج كريسبي - 1290DA</option>
@@ -248,7 +253,7 @@
     <img src="images/californiarollchesse.png" alt="California roll chesse" width="200">
     <h3>California roll chesse (8 piece)</h3>
     <p>نفس الكاليفورينا رول لكن يوضع فوقه قطع جبن الهمبرغر تكون ذايبة شوي.</p>
-    <select onchange="updatePrice('California roll chesse', this.value)">
+    <select onchange="updatePrice('Crunchy Roll', this.value)">
       <option value="">اختر الحشو</option>
       <option value="THON">تونة - 1190DA</option>
       <option value="POULET CRISPY">دجاج كريسبي - 1290DA</option>
@@ -265,7 +270,7 @@
     <img src="images/nems.png" alt="Les Nems" width="200">
     <h3>Les Nems (4 piece)</h3>
     <p>ورق الارز محشي بجزر و شعيرية صينية و دجاج او لحم.</p>
-    <select onchange="updatePrice('Les Nems', this.value)">
+    <select onchange="updatePrice('Gyoza', this.value)">
       <option value="">اختر الحشو</option>
       <option value="POULET">دجاج - 690DA</option>
       <option value="VIANDE">لحم - 890DA</option>
@@ -273,36 +278,6 @@
     <p class="price" id="Les Nems-price">السعر: -</p>
     <button onclick="addToCart('Les Nems')">أضف للسلة</button>
   </div>
-
-  <!-- Les Sauces -->
-  <div class="item">
-    <img src="images/sauces.png" alt="Les Sauces" width="200">
-    <h3>Les Sauces (1 piece)</h3>
-    <p>اختار الصوص الاضافية لبوكس السوشي الخاص بك.</p>
-    <select onchange="updatePrice('Les Sauces', this.value)">
-      <option value="">اختر الصوص</option>
-      <option value="SOYA SAUCE SALE">صويا صوص مالحة - 50DA</option>
-      <option value="SOJA SAUCE SUCRE">صوجا صوص حلوة - 100DA</option>
-      <option value="SPICY MAYO">مايو حارة - 100DA</option>
-      <option value="CHILI GARLIC OIL">صلصلة شيلي غارليك الحارة - 100DA</option>
-    </select>
-    <p class="price" id="Les Sauces-price">السعر: -</p>
-    <button onclick="addToCart('Les Sauces')">أضف للسلة</button>
-  </div>
-
-  <!-- Chop Sticks -->
-  <div class="item">
-    <img src="images/CHOP.png" alt="Chop Sticks" width="200">
-    <h3>Chop Sticks (1 piece)</h3>
-    <p>أعواد الاكل الصينية.</p>
-    <select onchange="updatePrice('Chop Sticks', this.value)">
-      <option value="">اختر</option>
-      <option value="1 CHOP STICKS">عود الاكل الصيني - 50DA</option>
-    </select>
-    <p class="price" id="Chop Sticks-price">السعر: -</p>
-    <button onclick="addToCart('Chop Sticks')">أضف للسلة</button>
-  </div>
-
 
 </section>
 
@@ -489,15 +464,6 @@
       if(choice === "POULET") price = 690;
       else if(choice === "VIANDE") price = 890;
     } 
-    if(item === "Les Sauces"){
-      if(choice === "SOYA SAUCE SALE") price = 50;
-      else if(choice === "SOJA SAUCE SUCRE") price = 100;
-      else if(choice === "SPICY MAYO") price = 100;
-      else if(choice === "CHILI GARLIC OIL") price = 100;
-    }
-    if(item === "Chop Sticks"){
-      if(choice === "1 CHOP STICKS") price = 50;
-    }
     document.getElementById(item+"-price").innerText = "السعر: " + price + " DA";
     selectedPrices[item] = price;
   }

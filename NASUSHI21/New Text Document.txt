@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>NA_SUSHI_21</title>
   <style>
-    body { 
+      body { 
       font-family: Tahoma, sans-serif; 
       background:#fff; 
       margin:0; 
@@ -17,53 +17,60 @@
       background:#b22222; 
       color:white; 
       display:flex; 
-      justify-content:space-between; /* اللوغو يمين والكتابة يسار */
+      justify-content:flex-end; /* كلشي على اليمين */
       align-items:center; 
       padding:20px; 
+      gap:40px; /* مسافة بين اللوغو والنص */
     }
     header img { 
-      width:180px; 
-      margin-left:20px; 
+      width:180px; /* اللوغو أكبر شوي */
+      float:right;        /* اللوغو على اليمين */
+      margin-left:20px
     }
-    header div { 
-      text-align:right; 
-    }
+    header div { text-align:right; }
 
-    .menu { display:flex; flex-wrap:wrap; justify-content:center; margin:20px; }
-    .item { background:#f9f9f9; border:1px solid #ddd; border-radius:8px; width:280px; margin:10px; padding:10px; text-align:right; }
+    /* ✅ المنيو يبقى في بلاصتو */
+    .menu { 
+      display:flex; 
+      flex-wrap:wrap; 
+      justify-content:center; 
+      margin:20px; 
+    }
+    .item { 
+      background:#f9f9f9; 
+      border:1px solid #ddd; 
+      border-radius:8px; 
+      width:280px; 
+      margin:10px; 
+      padding:10px; 
+      text-align:center; 
+    }
     .item img { width:100%; border-radius:8px; }
     .price { color:#b22222; font-weight:bold; margin:5px; }
     select { padding:5px; margin-top:5px; }
     button { background:#b22222; color:white; border:none; padding:8px; margin-top:8px; border-radius:5px; cursor:pointer; }
     button:hover { background:#8b1a1a; }
-    #cart { background:#f1f1f1; padding:15px; margin:20px; border-radius:8px; }
-    #notification { background:#4CAF50; color:white; padding:15px; text-align:center; display:none; }
-    #points { text-align:center; margin:20px; font-size:18px; }
-    form { background:#f9f9f9; margin:20px auto; padding:20px; border-radius:8px; width:300px; }
-    form input, form select { width:100%; padding:8px; margin:8px 0; border:1px solid #ddd; border-radius:5px; }
-    #langSelect { margin:10px; padding:5px; }
 
     /* ✅ الفوتر */
     footer { 
       background:#b22222; 
       color:white; 
       display:flex; 
-      justify-content:space-between; /* نص يسار وبطاقة يمين */
+      justify-content:flex-end; /* كلشي على اليمين */
       align-items:center; 
       padding:20px; 
       margin-top:40px; 
+      gap:20px; /* مسافة بين النص والصورة */
     }
     footer img { 
-      width:300px; 
-      margin-left:20px; 
+      width:300px; /* البطاقة أكبر شوي */
+      border-radius:8px; 
+      margin-left:20px;
     }
-    footer div { 
-      text-align:right; 
-    }
+    footer div { text-align:right; }
   </style>
 </head>
 <body>
-
 
 <header>
   <div class="header-content">
@@ -231,7 +238,7 @@
     <img src="images/futomakichesse.png" alt="Futomaki chesse" width="200">
     <h3>Futomaki chesse (8 piece)</h3>
     <p>نفس الفوطوماكي لكن يوضع فوقه قطع جبن الهمبرغر تكون ذايبة شوي.</p>
-    <select onchange="updatePrice('Futomaki chesse', this.value)">
+    <select onchange="updatePrice('Crunchy Roll', this.value)">
       <option value="">اختر الحشو</option>
       <option value="THON">تونة - 1190DA</option>
       <option value="POULET CRISPY">دجاج كريسبي - 1290DA</option>
@@ -248,7 +255,7 @@
     <img src="images/californiarollchesse.png" alt="California roll chesse" width="200">
     <h3>California roll chesse (8 piece)</h3>
     <p>نفس الكاليفورينا رول لكن يوضع فوقه قطع جبن الهمبرغر تكون ذايبة شوي.</p>
-    <select onchange="updatePrice('California roll chesse', this.value)">
+    <select onchange="updatePrice('Crunchy Roll', this.value)">
       <option value="">اختر الحشو</option>
       <option value="THON">تونة - 1190DA</option>
       <option value="POULET CRISPY">دجاج كريسبي - 1290DA</option>
