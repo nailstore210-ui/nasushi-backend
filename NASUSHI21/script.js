@@ -11,15 +11,20 @@ async function confirmOrder(e) {
     document.getElementById("phoneError").style.display = "none";
   }
 
+  const area = document.getElementById("custArea").value;
+  const deliveryFee = getDeliveryPrice(area);
+
   // نجمع بيانات الزبون من الفورم
   const order = {
     name: document.getElementById("custName").value,
     phone: phone,
     address: document.getElementById("custAddress").value,
-    area: document.getElementById("custArea").value,
+    area: area,
     time: document.getElementById("custTime").value,
     total: calculateTotal(),
     products: selectedProducts,
+    deliveryFee: deliveryFee,
+    finalTotal: calculateTotal() + deliveryFee,
     usedPoints: parseInt(document.getElementById("usedPoints")?.value) || 0
   };
 
@@ -33,7 +38,10 @@ async function confirmOrder(e) {
     const result = await response.json();
 
     if (result.status === "success") {
-      alert(`✅ تم إرسال الطلب! رقم الطلب: ${result.orderId}\nالمجموع الكلي مع التوصيل: ${result.finalTotal} DA`);
+      alert(`✅ تم إرسال الطلب! 
+رقم الطلب: ${result.orderId}
+سعر التوصيل: ${result.deliveryFee} DA
+المجموع الكلي: ${result.finalTotal} DA`);
       const balanceEl = document.getElementById("pointsBalance");
       if (balanceEl) balanceEl.textContent = result.newBalance;
     } else {
@@ -90,9 +98,10 @@ function updateCart() {
   const total = calculateTotal();
   document.getElementById("cartTotal").textContent = total;
 
-  const delivery = 200; // ثابت
-  document.getElementById("deliveryPrice").textContent = delivery;
-  document.getElementById("finalTotal").textContent = total + delivery;
+  const area = document.getElementById("custArea").value;
+  const delivery = getDeliveryPrice(area);
+  document.getElementById("deliveryPrice").textContent = delivery >= 0 ? delivery : 0;
+  document.getElementById("finalTotal").textContent = total + (delivery >= 0 ? delivery : 0);
 }
 
 // 🛒 دالة لإضافة منتج
@@ -105,6 +114,29 @@ function addProduct(name, price) {
 function removeProduct(index) {
   selectedProducts.splice(index, 1);
   updateCart();
+}
+
+// ✅ دالة حساب سعر التوصيل حسب المنطقة
+function getDeliveryPrice(area) {
+  const free = ["تفاحي","adll فلفلة","الفتوي","قرية لعرايس"];
+  if (free.includes(area)) return 0;
+
+  const hundred = ["بلاطان","القرية","الغطسة","ليابيي"];
+  if (hundred.includes(area)) return 100;
+
+  const oneFifty = ["شاطئ 8","شاطئ 10","الماناج"];
+  if (oneFifty.includes(area)) return 150;
+
+  const twoHundred = ["شاطئ 7","القرية السياحية","مارينا دور","سانتيفي","الجامعة","الاقامات الجامعية للإناث","الاقامات الجامعية للذكور","الحدائق"];
+  if (twoHundred.includes(area)) return 200;
+
+  const twoFifty = ["بوزعرورة","كوسيدار","جان دارك","لابيسين","adll بوزعرورة"];
+  if (twoFifty.includes(area)) return 250;
+
+  const threeHundred = ["33","حمادي كرومة","فالي","لاسيا","ليزالي","لبلاد","كامي","مرج الديب","بوبعلى","فوبور","واد الوحش","مسيون 1","مسيون 2","سانسو","سيسال","فاووث","ليباتيمو الشناوة","صالح بولكروة","زفزاف 1","زفزاف 2"];
+  if (threeHundred.includes(area)) return 300;
+
+  return -1; // إذا المنطقة مشي موجودة
 }
 
 // أول مرة نحدث السلة
