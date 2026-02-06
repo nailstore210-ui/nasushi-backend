@@ -33,20 +33,29 @@ function writeCustomers(customers) {
   fs.writeFileSync(filePath, JSON.stringify(customers, null, 2), "utf8");
 }
 
-// ✅ دالة حساب سعر التوصيل حسب المنطقة
+// ✅ دالة حساب سعر التوصيل حسب المنطقة (مع trim)
 function getDeliveryPrice(area) {
+  if (!area) return -1;
+  const cleanArea = area.trim();
+
   const free = ["تفاحي","adll فلفلة","الفتوي","قرية لعرايس"];
-  if (free.includes(area)) return 0;
+  if (free.includes(cleanArea)) return 0;
+
   const hundred = ["بلاطان","القرية","الغطسة","ليابيي"];
-  if (hundred.includes(area)) return 100;
+  if (hundred.includes(cleanArea)) return 100;
+
   const oneFifty = ["شاطئ 8","شاطئ 10","الماناج"];
-  if (oneFifty.includes(area)) return 150;
+  if (oneFifty.includes(cleanArea)) return 150;
+
   const twoHundred = ["شاطئ 7","القرية السياحية","مارينا دور","سانتيفي","الجامعة","الاقامات الجامعية للإناث","الاقامات الجامعية للذكور","الحدائق"];
-  if (twoHundred.includes(area)) return 200;
+  if (twoHundred.includes(cleanArea)) return 200;
+
   const twoFifty = ["بوزعرورة","كوسيدار","جان دارك","لابيسين","adll بوزعرورة"];
-  if (twoFifty.includes(area)) return 250;
+  if (twoFifty.includes(cleanArea)) return 250;
+
   const threeHundred = ["33","حمادي كرومة","فالي","لاسيا","ليزالي","لبلاد","كامي","مرج الديب","بوبعلى","فوبور","واد الوحش","مسيون 1","مسيون 2","سانسو","سيسال","فاووث","ليباتيمو الشناوة","صالح بولكروة","زفزاف 1","زفزاف 2"];
-  if (threeHundred.includes(area)) return 300;
+  if (threeHundred.includes(cleanArea)) return 300;
+
   return -1;
 }
 
@@ -87,7 +96,7 @@ app.post("/order", async (req, res) => {
     // ✅ حساب التوصيل والمجموع الكلي حسب المنطقة
     const deliveryFee = getDeliveryPrice(order.area);
     if (deliveryFee === -1) {
-      return res.send({ status: "error", message: "المنطقة غير مدعومة" });
+      return res.send({ status: "error", message: "المنطقة غير مدعومة أو فارغة" });
     }
     order.total = productsTotal;
     order.deliveryFee = deliveryFee;
