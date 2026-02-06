@@ -1,18 +1,26 @@
-// هذا الكود لازم يكون في ملف مستقل اسمو script.js داخل مجلد public
-
-// نربط الفورم بالحدث submit
-document.getElementById("orderForm").addEventListener("submit", async (e) => {
+// 📝 دالة تأكيد الطلبية (تستدعى من الفورم مباشرة)
+async function confirmOrder(e) {
   e.preventDefault(); // ما نخليش الصفحة تعاود تتحدث
+
+  // ✅ التحقق من رقم الهاتف (لازم 10 أرقام)
+  const phone = document.getElementById("custPhone").value.trim();
+  if (!/^\d{10}$/.test(phone)) {
+    document.getElementById("phoneError").style.display = "inline";
+    return;
+  } else {
+    document.getElementById("phoneError").style.display = "none";
+  }
 
   // نجمع بيانات الزبون من الفورم
   const order = {
     name: document.getElementById("custName").value,
-    phone: document.getElementById("custPhone").value,
+    phone: phone,
+    address: document.getElementById("custAddress").value,
     area: document.getElementById("custArea").value,
-    total: calculateTotal(), // دالة تحسب المجموع من المنيو
-    products: selectedProducts, // قائمة الأطباق اللي اختارها الزبون
-    time: new Date().toLocaleString(),
-    usedPoints: parseInt(document.getElementById("usedPoints")?.value) || 0 // إذا عندك input للنقاط
+    time: document.getElementById("custTime").value,
+    total: calculateTotal(),
+    products: selectedProducts,
+    usedPoints: parseInt(document.getElementById("usedPoints")?.value) || 0
   };
 
   try {
@@ -28,7 +36,8 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     if (result.status === "success") {
       alert(`✅ تم إرسال الطلب! رقم الطلب: ${result.orderId}`);
       // تحديث واجهة النقاط
-      document.getElementById("pointsBalance").textContent = result.newBalance;
+      const balanceEl = document.getElementById("pointsBalance");
+      if (balanceEl) balanceEl.textContent = result.newBalance;
     } else {
       alert("❌ صار مشكل في إرسال الطلب.");
     }
@@ -36,23 +45,54 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
     console.error("خطأ في الاتصال بالسيرفر:", err);
     alert("⚠️ السيرفر ما راهوش يرد.");
   }
-});
+}
 
 // زر تحديث رصيد النقاط
-document.getElementById("checkPoints").addEventListener("click", async () => {
-  const phone = document.getElementById("custPhone").value;
-  const response = await fetch(`https://nasushi-backend.onrender.com/points/${phone}`);
-  const result = await response.json();
-  document.getElementById("pointsBalance").textContent = result.points;
-});
+const checkBtn = document.getElementById("checkPoints");
+if (checkBtn) {
+  checkBtn.addEventListener("click", async () => {
+    const phone = document.getElementById("custPhone").value.trim();
+    if (!phone) {
+      alert("⚠️ لازم تدخل رقم الهاتف أولا.");
+      return;
+    }
+    const response = await fetch(`https://nasushi-backend.onrender.com/points/${phone}`);
+    const result = await response.json();
+    document.getElementById("pointsBalance").textContent = result.points;
+  });
+}
 
-// مثال دالة تحسب المجموع (تقدري تبدليها حسب المنيو)
+// 🛒 دالة تحسب المجموع (تقدري تبدليها حسب المنيو)
 function calculateTotal() {
   return selectedProducts.reduce((sum, p) => sum + p.price, 0);
 }
 
-// مثال: قائمة المنتجات المختارة (تتبدل حسب المنيو الحقيقي)
+// 🛒 مثال: قائمة المنتجات المختارة (تتبدل حسب المنيو الحقيقي)
 let selectedProducts = [
   {name: "California Roll", price: 1090},
   {name: "Sushi Mix", price: 2400}
 ];
+
+// 🛒 تحديث السلة في الصفحة
+function updateCart() {
+  const cartItems = document.getElementById("cartItems");
+  cartItems.innerHTML = "";
+
+  selectedProducts.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = `${p.name} - ${p.price} DA`;
+    cartItems.appendChild(li);
+  });
+
+  const total = calculateTotal();
+  document.getElementById("cartTotal").textContent = total;
+
+  // مثال: سعر التوصيل ثابت 200 DA
+  const delivery = 200;
+  document.getElementById("deliveryPrice").textContent = delivery;
+
+  document.getElementById("finalTotal").textContent = total + delivery;
+}
+
+// أول مرة نحدث السلة
+updateCart();
