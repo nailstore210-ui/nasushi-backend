@@ -1,3 +1,4 @@
+
 let cart = [];
 let selectedPrices = {};
 let points = 0;
@@ -17,7 +18,7 @@ const translations = {
 // 📝 تحديد السعر حسب المنتج والحشو
 function updatePrice(item, choice) {
   let price = 0;
-  // ... كل شروط الأسعار كما عندك ...
+  // ... كل شروط الأسعار كما عندك (California Roll, Crispy Roll, Futomaki, Hosomaki, Dragon Roll, Nigiri, Gyoza, Crunchy Roll, Futomaki chesse, California roll chesse, Les Nems, Les Sauces, Chop Sticks) ...
   document.getElementById(item+"-price").innerText = "السعر: " + price + " DA";
   selectedPrices[item] = price;
 }
