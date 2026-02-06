@@ -70,9 +70,12 @@ app.post("/order", async (req, res) => {
       return res.send({ status: "error", message: "رصيد النقاط غير كافي" });
     }
 
+    // ⚡ نحسب المجموع من المنتجات مباشرة
+    const productsTotal = order.products.reduce((sum, p) => sum + Number(p.price), 0);
+
     let earnedPoints = 0;
     if (usedPoints === 0) {
-      earnedPoints = Math.floor(Number(order.total) / 100);
+      earnedPoints = Math.floor(productsTotal / 100);
       currentPoints += earnedPoints;
     }
 
@@ -86,8 +89,9 @@ app.post("/order", async (req, res) => {
     if (deliveryFee === -1) {
       return res.send({ status: "error", message: "المنطقة غير مدعومة" });
     }
+    order.total = productsTotal;
     order.deliveryFee = deliveryFee;
-    order.finalTotal = Number(order.total) + deliveryFee;
+    order.finalTotal = productsTotal + deliveryFee;
 
     // ✅ نخزن الطلبية
     fs.appendFileSync(path.join(__dirname, "orders.txt"), JSON.stringify(order) + "\n", "utf8");
