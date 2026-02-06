@@ -16,8 +16,8 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   };
 
   try {
-    // نبعث الطلبية للسيرفر
-    const response = await fetch("http://localhost:3000/order", {
+    // نبعث الطلبية للسيرفر (رابط Render)
+    const response = await fetch("https://nasushi-backend.onrender.com/order", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(order)
@@ -41,7 +41,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
 // زر تحديث رصيد النقاط
 document.getElementById("checkPoints").addEventListener("click", async () => {
   const phone = document.getElementById("custPhone").value;
-  const response = await fetch(`http://localhost:3000/points/${phone}`);
+  const response = await fetch(`https://nasushi-backend.onrender.com/points/${phone}`);
   const result = await response.json();
   document.getElementById("pointsBalance").textContent = result.points;
 });
