@@ -106,6 +106,20 @@ app.post("/order", async (req, res) => {
     fs.appendFileSync(path.join(__dirname, "orders.txt"), JSON.stringify(order) + "\n", "utf8");
     writeCustomers(customers);
 
+    // ✅ إرسال رسالة واتساب عبر Twilio إذا مفعّل
+    if (client) {
+      try {
+        await client.messages.create({
+          from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER, // رقم واتساب sandbox أو الرسمي
+          to: "whatsapp:" + order.phone, // رقم الزبون
+          body: `طلب جديد من ${order.name} 📦\nالمنتجات: ${order.products.map(p => p.name).join(", ")}\nالمجموع: ${order.finalTotal} DA\nرقم الطلب: ${orderId}`
+        });
+        console.log("✅ رسالة واتساب تبعثت بنجاح");
+      } catch (err) {
+        console.error("❌ خطأ في إرسال واتساب:", err.message);
+      }
+    }
+
     // ✅ الرد المباشر JSON
     res.send({
       status: "success",
