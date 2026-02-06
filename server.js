@@ -1,10 +1,12 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const cors = require("cors"); // ✅ نضيف CORS
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
+app.use(cors()); // ✅ السماح بالاتصال من أي دومين
 app.use(express.static("NASUSHI21"));
 
 // Twilio (يتفعل فقط إذا عندك المتغيرات)
@@ -43,9 +45,7 @@ app.post("/order", async (req, res) => {
     }
 
     let currentPoints = customers[customerKey].points;
-    if (currentPoints >= usedPoints) {
-      currentPoints -= usedPoints;
-    } else {
+    if (currentPoints < usedPoints) {
       return res.send({ status: "error", message: "رصيد النقاط غير كافي" });
     }
 
@@ -77,7 +77,7 @@ app.post("/order", async (req, res) => {
       }
     }
 
-    // ✅ الرد مباشرة JSON بلا فاتورة
+    // ✅ الرد المباشر JSON
     res.send({
       status: "success",
       orderId,
