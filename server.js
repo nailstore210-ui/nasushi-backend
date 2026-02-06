@@ -1,6 +1,5 @@
 const express = require("express");
 const fs = require("fs");
-const PDFDocument = require("pdfkit");
 const path = require("path");
 require("dotenv").config();
 
@@ -78,47 +77,16 @@ app.post("/order", async (req, res) => {
       }
     }
 
-    // توليد PDF (اختياري)
-    const doc = new PDFDocument();
-    const filePath = path.join(__dirname, `invoice-${orderId}.pdf`);
-    const stream = fs.createWriteStream(filePath);
-    doc.pipe(stream);
-
-    const logoPath = path.join(__dirname, "logo.png");
-    if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, { fit: [100, 100], align: "center", valign: "top" });
-    }
-
-    doc.fontSize(20).text("فاتورة الطلبية", { align: "center" });
-    doc.text(`🆔 رقم الطلب: ${orderId}`);
-    doc.text(`👤 الاسم: ${order.name}`);
-    doc.text(`📞 الهاتف: ${order.phone}`);
-    doc.text(`💰 المجموع: ${order.total} DA`);
-    doc.text(`🪙 الرصيد الجديد: ${order.pointsBalance}`);
-    doc.end();
-
-    // ✅ الرد يكون JSON بدل redirect
-    stream.on("finish", () => {
-      res.send({
-        status: "success",
-        orderId,
-        newBalance: currentPoints
-      });
+    // ✅ الرد مباشرة JSON بلا فاتورة
+    res.send({
+      status: "success",
+      orderId,
+      newBalance: currentPoints
     });
 
   } catch (err) {
     console.error("❌ خطأ في معالجة الطلبية:", err.message);
     res.status(500).send({ error: "خطأ في معالجة الطلبية" });
-  }
-});
-
-// ✅ Route لعرض الفاتورة
-app.get("/invoice/:id", (req, res) => {
-  const filePath = path.join(__dirname, `invoice-${req.params.id}.pdf`);
-  if (fs.existsSync(filePath)) {
-    res.sendFile(filePath, { headers: { "Content-Type": "application/pdf" } });
-  } else {
-    res.status(404).send("❌ الفاتورة غير موجودة");
   }
 });
 
