@@ -33,6 +33,23 @@ function writeCustomers(customers) {
   fs.writeFileSync(filePath, JSON.stringify(customers, null, 2), "utf8");
 }
 
+// ✅ دالة حساب سعر التوصيل حسب المنطقة
+function getDeliveryPrice(area) {
+  const free = ["تفاحي","adll فلفلة","الفتوي","قرية لعرايس"];
+  if (free.includes(area)) return 0;
+  const hundred = ["بلاطان","القرية","الغطسة","ليابيي"];
+  if (hundred.includes(area)) return 100;
+  const oneFifty = ["شاطئ 8","شاطئ 10","الماناج"];
+  if (oneFifty.includes(area)) return 150;
+  const twoHundred = ["شاطئ 7","القرية السياحية","مارينا دور","سانتيفي","الجامعة","الاقامات الجامعية للإناث","الاقامات الجامعية للذكور","الحدائق"];
+  if (twoHundred.includes(area)) return 200;
+  const twoFifty = ["بوزعرورة","كوسيدار","جان دارك","لابيسين","adll بوزعرورة"];
+  if (twoFifty.includes(area)) return 250;
+  const threeHundred = ["33","حمادي كرومة","فالي","لاسيا","ليزالي","لبلاد","كامي","مرج الديب","بوبعلى","فوبور","واد الوحش","مسيون 1","مسيون 2","سانسو","سيسال","فاووث","ليباتيمو الشناوة","صالح بولكروة","زفزاف 1","زفزاف 2"];
+  if (threeHundred.includes(area)) return 300;
+  return -1;
+}
+
 // ✅ Route لطلبية جديدة
 app.post("/order", async (req, res) => {
   try {
@@ -64,8 +81,11 @@ app.post("/order", async (req, res) => {
     order.pointsUsed = usedPoints;
     order.pointsBalance = currentPoints;
 
-    // ✅ حساب التوصيل والمجموع الكلي
-    const deliveryFee = 200; // ثابت، تقدر تبدلو حسب المنطقة
+    // ✅ حساب التوصيل والمجموع الكلي حسب المنطقة
+    const deliveryFee = getDeliveryPrice(order.area);
+    if (deliveryFee === -1) {
+      return res.send({ status: "error", message: "المنطقة غير مدعومة" });
+    }
     order.deliveryFee = deliveryFee;
     order.finalTotal = Number(order.total) + deliveryFee;
 
@@ -73,7 +93,7 @@ app.post("/order", async (req, res) => {
     fs.appendFileSync(path.join(__dirname, "orders.txt"), JSON.stringify(order) + "\n", "utf8");
     writeCustomers(customers);
 
-    // Twilio
+    // Twilio (اختياري)
     if (client) {
       try {
         await client.messages.create({
