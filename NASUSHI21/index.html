@@ -612,7 +612,7 @@ async function confirmOrder(event){
   };
 
   try {
-    const response = await fetch("http://localhost:3000/order", {
+    const response = await fetch("https://nasushi-backend.onrender.com/order", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(order)
@@ -664,7 +664,6 @@ async function confirmOrder(event){
     translations[lang].cartTotal + document.getElementById("cartTotal").innerText + " DA";
 }
 </script>
-<script src="script.js"></script>
 
 </body>
 </html>
