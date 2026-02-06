@@ -8,6 +8,12 @@ const app = express();
 app.use(express.json());
 app.use(express.static("NASUSHI21"));
 
+// Twilio (يتفعل فقط إذا عندك المتغيرات)
+let client = null;
+if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+  client = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+}
+
 // 🏠 Route رئيسي
 app.get("/", (req, res) => {
   res.send("✅ Nasushi Backend is running!");
@@ -58,11 +64,31 @@ app.post("/order", async (req, res) => {
     fs.appendFileSync("orders.txt", JSON.stringify(order) + "\n", "utf8");
     writeCustomers(customers);
 
-    // ✅ توليد PDF (بسيط بلا لوغو)
+    // Twilio (يتفعل فقط إذا client موجود)
+    if (client) {
+      try {
+        await client.messages.create({
+          from: "whatsapp:+14155238886",
+          to: "whatsapp:+213792106084",
+          body: `طلب جديد 🛒 رقم الطلب: ${order.id}`
+        });
+        console.log("✅ تم إرسال الطلب إلى واتساب");
+      } catch (err) {
+        console.error("❌ خطأ في إرسال واتساب:", err.message);
+      }
+    }
+
+    // توليد PDF
     const doc = new PDFDocument();
     const filePath = path.join(__dirname, `invoice-${orderId}.pdf`);
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
+
+    // شعار إذا موجود
+    const logoPath = path.join(__dirname, "logo.png");
+    if (fs.existsSync(logoPath)) {
+      doc.image(logoPath, { fit: [100, 100], align: "center", valign: "top" });
+    }
 
     doc.fontSize(20).text("فاتورة الطلبية", { align: "center" });
     doc.text(`🆔 رقم الطلب: ${orderId}`);
@@ -72,13 +98,22 @@ app.post("/order", async (req, res) => {
     doc.text(`🪙 الرصيد الجديد: ${order.pointsBalance}`);
     doc.end();
 
-    // ✅ بدل redirect برد JSON بسيط
     stream.on("finish", () => {
-      res.json({ status: "success", orderId, message: "✅ الطلبية تسجلت والفاتورة تولدت" });
+      res.redirect(`/invoice/${orderId}`);
     });
   } catch (err) {
     console.error("❌ خطأ في معالجة الطلبية:", err.message);
     res.status(500).send({ error: "خطأ في معالجة الطلبية" });
+  }
+});
+
+// ✅ Route لعرض الفاتورة
+app.get("/invoice/:id", (req, res) => {
+  const filePath = path.join(__dirname, `invoice-${req.params.id}.pdf`);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath, { headers: { "Content-Type": "application/pdf" } });
+  } else {
+    res.status(404).send("❌ الفاتورة غير موجودة");
   }
 });
 
@@ -89,5 +124,5 @@ app.get("/points/:phone", (req, res) => {
   res.send({ points: customers[phone] ? customers[phone].points : 0 });
 });
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
