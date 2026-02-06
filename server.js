@@ -64,16 +64,21 @@ app.post("/order", async (req, res) => {
     order.pointsUsed = usedPoints;
     order.pointsBalance = currentPoints;
 
-    // ✅ نخزن الطلبية في ملف بنفس مجلد المشروع
+    // ✅ حساب التوصيل والمجموع الكلي
+    const deliveryFee = 200; // ثابت، تقدر تبدلو حسب المنطقة
+    order.deliveryFee = deliveryFee;
+    order.finalTotal = Number(order.total) + deliveryFee;
+
+    // ✅ نخزن الطلبية
     fs.appendFileSync(path.join(__dirname, "orders.txt"), JSON.stringify(order) + "\n", "utf8");
     writeCustomers(customers);
 
-    // Twilio (يتفعل فقط إذا client موجود)
+    // Twilio
     if (client) {
       try {
         await client.messages.create({
-          from: "whatsapp:+14155238886", // رقم Sandbox
-          to: "whatsapp:+213792106084",  // رقمك الشخصي لازم يكون مربوط مع Sandbox
+          from: "whatsapp:+14155238886",
+          to: "whatsapp:+213792106084",
           body: `طلب جديد 🛒
 رقم الطلب: ${order.id}
 الاسم: ${order.name}
@@ -82,6 +87,8 @@ app.post("/order", async (req, res) => {
 المنطقة: ${order.area}
 وقت التوصيل: ${order.time}
 المجموع: ${order.total} DA
+سعر التوصيل: ${order.deliveryFee} DA
+المجموع الكلي: ${order.finalTotal} DA
 النقاط المستعملة: ${order.pointsUsed}
 الرصيد الجديد: ${order.pointsBalance}`
         });
@@ -95,6 +102,8 @@ app.post("/order", async (req, res) => {
     res.send({
       status: "success",
       orderId,
+      deliveryFee,
+      finalTotal: order.finalTotal,
       newBalance: currentPoints
     });
 
