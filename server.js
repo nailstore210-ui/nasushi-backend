@@ -35,7 +35,7 @@ app.post("/order", async (req, res) => {
     const orderId = "ORD-" + Date.now();
     order.id = orderId;
 
-    // نقاط
+    // 🪙 حساب النقاط
     const usedPoints = Number(order.usedPoints) || 0;
     let customers = readCustomers();
     const customerKey = order.phone;
@@ -78,13 +78,12 @@ app.post("/order", async (req, res) => {
       }
     }
 
-    // توليد PDF
+    // توليد PDF (اختياري)
     const doc = new PDFDocument();
     const filePath = path.join(__dirname, `invoice-${orderId}.pdf`);
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
 
-    // شعار إذا موجود
     const logoPath = path.join(__dirname, "logo.png");
     if (fs.existsSync(logoPath)) {
       doc.image(logoPath, { fit: [100, 100], align: "center", valign: "top" });
@@ -98,9 +97,15 @@ app.post("/order", async (req, res) => {
     doc.text(`🪙 الرصيد الجديد: ${order.pointsBalance}`);
     doc.end();
 
+    // ✅ الرد يكون JSON بدل redirect
     stream.on("finish", () => {
-      res.redirect(`/invoice/${orderId}`);
+      res.send({
+        status: "success",
+        orderId,
+        newBalance: currentPoints
+      });
     });
+
   } catch (err) {
     console.error("❌ خطأ في معالجة الطلبية:", err.message);
     res.status(500).send({ error: "خطأ في معالجة الطلبية" });
