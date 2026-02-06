@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -23,11 +24,13 @@ if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
 
 // دوال العملاء
 function readCustomers() {
-  if (!fs.existsSync("customers.json")) return {};
-  return JSON.parse(fs.readFileSync("customers.json", "utf8"));
+  const filePath = path.join(__dirname, "customers.json");
+  if (!fs.existsSync(filePath)) return {};
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 function writeCustomers(customers) {
-  fs.writeFileSync("customers.json", JSON.stringify(customers, null, 2), "utf8");
+  const filePath = path.join(__dirname, "customers.json");
+  fs.writeFileSync(filePath, JSON.stringify(customers, null, 2), "utf8");
 }
 
 // ✅ Route لطلبية جديدة
@@ -61,15 +64,16 @@ app.post("/order", async (req, res) => {
     order.pointsUsed = usedPoints;
     order.pointsBalance = currentPoints;
 
-    fs.appendFileSync("orders.txt", JSON.stringify(order) + "\n", "utf8");
+    // ✅ نخزن الطلبية في ملف بنفس مجلد المشروع
+    fs.appendFileSync(path.join(__dirname, "orders.txt"), JSON.stringify(order) + "\n", "utf8");
     writeCustomers(customers);
 
     // Twilio (يتفعل فقط إذا client موجود)
     if (client) {
       try {
         await client.messages.create({
-          from: "whatsapp:+14155238886",
-          to: "whatsapp:+213792106084",
+          from: "whatsapp:+14155238886", // رقم Sandbox
+          to: "whatsapp:+213792106084",  // رقمك الشخصي لازم يكون مربوط مع Sandbox
           body: `طلب جديد 🛒 رقم الطلب: ${order.id}`
         });
         console.log("✅ تم إرسال الطلب إلى واتساب");
