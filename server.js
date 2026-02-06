@@ -74,7 +74,16 @@ app.post("/order", async (req, res) => {
         await client.messages.create({
           from: "whatsapp:+14155238886", // رقم Sandbox
           to: "whatsapp:+213792106084",  // رقمك الشخصي لازم يكون مربوط مع Sandbox
-          body: `طلب جديد 🛒 رقم الطلب: ${order.id}`
+          body: `طلب جديد 🛒
+رقم الطلب: ${order.id}
+الاسم: ${order.name}
+الهاتف: ${order.phone}
+العنوان: ${order.address}
+المنطقة: ${order.area}
+وقت التوصيل: ${order.time}
+المجموع: ${order.total} DA
+النقاط المستعملة: ${order.pointsUsed}
+الرصيد الجديد: ${order.pointsBalance}`
         });
         console.log("✅ تم إرسال الطلب إلى واتساب");
       } catch (err) {
