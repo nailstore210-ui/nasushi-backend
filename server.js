@@ -1,12 +1,19 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const cors = require("cors"); // ✅ نضيف CORS
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // ✅ السماح بالاتصال من أي دومين
+app.use(cors());
+
+// 🏠 Route رئيسي لازم يجي قبل static
+app.get("/", (req, res) => {
+  res.send("✅ Nasushi Backend is running!");
+});
+
+// static files (يجي بعد الـ route الرئيسي)
 app.use(express.static("NASUSHI21"));
 
 // Twilio (يتفعل فقط إذا عندك المتغيرات)
@@ -14,11 +21,6 @@ let client = null;
 if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
   client = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 }
-
-// 🏠 Route رئيسي
-app.get("/", (req, res) => {
-  res.send("✅ Nasushi Backend is running!");
-});
 
 // دوال العملاء
 function readCustomers() {
