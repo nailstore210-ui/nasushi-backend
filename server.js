@@ -1,6 +1,5 @@
 const express = require("express");
 const fs = require("fs");
-const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -8,13 +7,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// 🏠 Route رئيسي لازم يجي قبل static
-app.get("/", (req, res) => {
+// 🏠 نخلي الموقع يبان مباشرة في /
+app.use(express.static("NASUSHI21"));
+
+// ✅ نخلي نص بسيط في /status باش نعرف أن السيرفر حي
+app.get("/status", (req, res) => {
   res.send("✅ Nasushi Backend is running!");
 });
-
-// static files (يجي بعد الـ route الرئيسي)
-app.use(express.static("NASUSHI21"));
 
 // Twilio (يتفعل فقط إذا عندك المتغيرات)
 let client = null;
