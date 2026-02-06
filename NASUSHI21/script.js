@@ -15,6 +15,7 @@ const translations = {
   en: {title:"NA_SUSHI_21 - Japanese Food", cartTitle:"🛒 Shopping Cart", cartTotal:"Total: ", formTitle:"📝 Customer Information", confirmBtn:"Confirm Order", notification:"✅ Your order has been placed: ", points:"Your loyalty points: "}
 };
 
+
 // 📝 تحديد السعر حسب المنتج والحشو
 function updatePrice(item, choice) {
   let price = 0;
