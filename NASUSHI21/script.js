@@ -24,7 +24,6 @@ async function confirmOrder(e) {
   };
 
   try {
-    // نبعث الطلبية للسيرفر (رابط Render)
     const response = await fetch("https://nasushi-backend.onrender.com/order", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -34,8 +33,7 @@ async function confirmOrder(e) {
     const result = await response.json();
 
     if (result.status === "success") {
-      alert(`✅ تم إرسال الطلب! رقم الطلب: ${result.orderId}`);
-      // تحديث واجهة النقاط
+      alert(`✅ تم إرسال الطلب! رقم الطلب: ${result.orderId}\nالمجموع الكلي مع التوصيل: ${result.finalTotal} DA`);
       const balanceEl = document.getElementById("pointsBalance");
       if (balanceEl) balanceEl.textContent = result.newBalance;
     } else {
@@ -62,36 +60,51 @@ if (checkBtn) {
   });
 }
 
-// 🛒 دالة تحسب المجموع (تقدري تبدليها حسب المنيو)
+// 🛒 قائمة المنتجات المختارة (تبدأ فارغة)
+let selectedProducts = [];
+
+// 🛒 دالة تحسب المجموع
 function calculateTotal() {
   return selectedProducts.reduce((sum, p) => sum + p.price, 0);
 }
 
-// 🛒 مثال: قائمة المنتجات المختارة (تتبدل حسب المنيو الحقيقي)
-let selectedProducts = [
-  {name: "California Roll", price: 1090},
-  {name: "Sushi Mix", price: 2400}
-];
-
-// 🛒 تحديث السلة في الصفحة
+// 🛒 دالة تحديث السلة
 function updateCart() {
   const cartItems = document.getElementById("cartItems");
   cartItems.innerHTML = "";
 
-  selectedProducts.forEach(p => {
+  selectedProducts.forEach((p, index) => {
     const li = document.createElement("li");
     li.textContent = `${p.name} - ${p.price} DA`;
+
+    // زر حذف
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "❌";
+    removeBtn.style.marginLeft = "10px";
+    removeBtn.onclick = () => removeProduct(index);
+
+    li.appendChild(removeBtn);
     cartItems.appendChild(li);
   });
 
   const total = calculateTotal();
   document.getElementById("cartTotal").textContent = total;
 
-  // مثال: سعر التوصيل ثابت 200 DA
-  const delivery = 200;
+  const delivery = 200; // ثابت
   document.getElementById("deliveryPrice").textContent = delivery;
-
   document.getElementById("finalTotal").textContent = total + delivery;
+}
+
+// 🛒 دالة لإضافة منتج
+function addProduct(name, price) {
+  selectedProducts.push({ name, price });
+  updateCart();
+}
+
+// 🛒 دالة لحذف منتج
+function removeProduct(index) {
+  selectedProducts.splice(index, 1);
+  updateCart();
 }
 
 // أول مرة نحدث السلة
