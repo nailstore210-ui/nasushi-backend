@@ -1,6 +1,7 @@
 // 🛒 السلة والاختيارات
 let cart = [];
 let selectedPrices = {};
+const API_URL = "https://nasushi-backend.onrender.com"; // رابط السيرفر على Render
 
 // 📝 تحديد السعر حسب المنتج والحشو
 function updatePrice(item, choice) {
@@ -191,11 +192,11 @@ function updateCart(){
   document.getElementById("deliveryMessage").innerText = deliveryMessage;
   document.getElementById("finalTotal").innerText = total + deliveryPrice;
 }
-// 📝 دالة تأكيد الطلبية (تستدعى من الفورم مباشرة)
-async function confirmOrder(e) {
-  e.preventDefault(); // ما نخليش الصفحة تعاود تتحدث
 
-  // ✅ التحقق من رقم الهاتف (لازم 10 أرقام)
+// 📝 دالة تأكيد الطلبية
+async function confirmOrder(e) {
+  e.preventDefault();
+
   const phone = document.getElementById("custPhone").value.trim();
   if (!/^\d{10}$/.test(phone)) {
     document.getElementById("phoneError").style.display = "inline";
@@ -204,7 +205,6 @@ async function confirmOrder(e) {
     document.getElementById("phoneError").style.display = "none";
   }
 
-  // ✅ التحقق من السلة
   if (cart.length === 0) {
     alert("⚠️ السلة فارغة!");
     return;
@@ -212,17 +212,13 @@ async function confirmOrder(e) {
 
   const area = document.getElementById("custArea").value;
   const deliveryFee = getDeliveryPrice(area);
-
   if (deliveryFee === -1) {
     alert("⚠️ المنطقة غير مدعومة، يرجى التواصل معنا عبر واتساب أو فيسبوك/إنستغرام.");
     return;
   }
 
-  // 🛒 حساب المجموع
-  let total = cart.reduce((sum, item) => sum + item.price, 0);
-  total += deliveryFee;
+  let total = cart.reduce((sum, item) => sum + item.price, 0) + deliveryFee;
 
-  // نجمع بيانات الزبون من الفورم
   const order = {
     name: document.getElementById("custName").value,
     phone: phone,
@@ -237,7 +233,7 @@ async function confirmOrder(e) {
   };
 
   try {
-    const response = await fetch("https://nasushi-backend.onrender.com/order", {
+    const response = await fetch(`${API_URL}/order`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(order)
@@ -251,11 +247,9 @@ async function confirmOrder(e) {
 سعر التوصيل: ${result.deliveryFee} DA
 المجموع الكلي: ${result.finalTotal} DA`);
 
-      // 🪙 تحديث رصيد النقاط
       const balanceEl = document.getElementById("pointsBalance");
       if (balanceEl) balanceEl.textContent = result.newBalance;
 
-      // 📝 عرض ملخص الطلبية
       document.getElementById("orderSummary").style.display = "block";
       let productNames = cart.map(item => item.name + " (" + item.price + " DA)").join("، ");
       document.getElementById("summaryItems").innerText = "المنتجات المختارة: " + productNames;
@@ -263,7 +257,6 @@ async function confirmOrder(e) {
       document.getElementById("summaryTotal").innerText = "المجموع الكلي مع التوصيل: " + total + " DA";
       document.getElementById("summaryPoints").innerText = "🪙 رصيدك الحالي: " + result.newBalance;
 
-      // تفريغ السلة وإعادة ضبط الفورم
       cart = [];
       updateCart();
       document.getElementById("orderForm").reset();
@@ -285,7 +278,7 @@ if (checkBtn) {
       alert("⚠️ لازم تدخل رقم الهاتف أولا.");
       return;
     }
-    const response = await fetch(`https://nasushi-backend.onrender.com/points/${phone}`);
+    const response = await fetch(`${API_URL}/points/${phone}`);
     const result = await response.json();
     document.getElementById("pointsBalance").textContent = result.points;
   });
