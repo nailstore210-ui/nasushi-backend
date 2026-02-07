@@ -28,6 +28,9 @@ const privateKey = process.env.GOOGLE_PRIVATE_KEY
   ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n') 
   : null;
 
+console.log("🔑 GOOGLE_PRIVATE_KEY raw:", process.env.GOOGLE_PRIVATE_KEY);
+console.log("🔑 GOOGLE_PRIVATE_KEY parsed:", process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"));
+
 const auth = new google.auth.GoogleAuth({
   credentials: {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
