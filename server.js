@@ -24,10 +24,14 @@ if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
 }
 
 // Google Sheets إعداد
+const privateKey = process.env.GOOGLE_PRIVATE_KEY 
+  ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n') 
+  : null;
+
 const auth = new google.auth.GoogleAuth({
   credentials: {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    private_key: privateKey,
   },
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
@@ -121,9 +125,15 @@ app.post("/order", async (req, res) => {
     // ✅ إرسال رسالة واتساب عبر Twilio إذا مفعّل
     if (client) {
       try {
+        // تحويل الرقم المحلي (10 أرقام يبدأ بـ 0) لصيغة دولية
+        let phone = order.phone;
+        if (phone.startsWith("0") && phone.length === 10) {
+          phone = "+213" + phone.substring(1);
+        }
+
         await client.messages.create({
           from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER,
-          to: "whatsapp:" + order.phone,
+          to: "whatsapp:" + phone,
           body: `طلب جديد من ${order.name} 📦\nالمنتجات: ${order.products.map(p => p.name).join(", ")}\nالمجموع: ${order.finalTotal} DA\nرقم الطلب: ${orderId}`
         });
         console.log("✅ رسالة واتساب تبعثت بنجاح");
