@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
+const { google } = require("googleapis");
 
 const app = express();
 app.use(express.json());
@@ -22,6 +23,17 @@ if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
   client = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 }
 
+// Google Sheets إعداد
+const auth = new google.auth.GoogleAuth({
+  credentials: {
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  },
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+});
+const sheets = google.sheets({ version: "v4", auth });
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
+
 // دوال العملاء
 function readCustomers() {
   const filePath = path.join(__dirname, "customers.json");
@@ -33,7 +45,7 @@ function writeCustomers(customers) {
   fs.writeFileSync(filePath, JSON.stringify(customers, null, 2), "utf8");
 }
 
-// ✅ دالة حساب سعر التوصيل حسب المنطقة (مع trim)
+// ✅ دالة حساب سعر التوصيل حسب المنطقة
 function getDeliveryPrice(area) {
   if (!area) return -1;
   const cleanArea = area.trim();
@@ -59,6 +71,7 @@ function getDeliveryPrice(area) {
   return -1;
 }
 
+// ✅ Route /order
 app.post("/order", async (req, res) => {
   try {
     const order = req.body;
@@ -144,21 +157,6 @@ app.post("/order", async (req, res) => {
     } catch (err) {
       console.error("❌ خطأ في تسجيل الطلبية في Google Sheets:", err.message);
     }
-
-    // ✅ الرد المباشر JSON
-    res.send({
-      status: "success",
-      orderId,
-      deliveryFee,
-      finalTotal: order.finalTotal,
-      newBalance: currentPoints
-    });
-
-  } catch (err) {
-    console.error("❌ خطأ في معالجة الطلبية:", err.message);
-    res.status(500).send({ error: "خطأ في معالجة الطلبية" });
-  }
-});
 
     // ✅ الرد المباشر JSON
     res.send({
