@@ -59,7 +59,6 @@ function getDeliveryPrice(area) {
   return -1;
 }
 
-// ✅ Route لطلبية جديدة
 app.post("/order", async (req, res) => {
   try {
     const order = req.body;
