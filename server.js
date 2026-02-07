@@ -109,8 +109,8 @@ app.post("/order", async (req, res) => {
     if (client) {
       try {
         await client.messages.create({
-          from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER, // رقم واتساب sandbox أو الرسمي
-          to: "whatsapp:" + order.phone, // رقم الزبون
+          from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER,
+          to: "whatsapp:" + order.phone,
           body: `طلب جديد من ${order.name} 📦\nالمنتجات: ${order.products.map(p => p.name).join(", ")}\nالمجموع: ${order.finalTotal} DA\nرقم الطلب: ${orderId}`
         });
         console.log("✅ رسالة واتساب تبعثت بنجاح");
@@ -118,6 +118,47 @@ app.post("/order", async (req, res) => {
         console.error("❌ خطأ في إرسال واتساب:", err.message);
       }
     }
+
+    // ✅ تسجيل الطلبية في Google Sheets
+    try {
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: "Sheet1!A:J",
+        valueInputOption: "USER_ENTERED",
+        requestBody: {
+          values: [[
+            orderId,
+            order.name,
+            order.phone,
+            order.area,
+            order.products.map(p => p.name + " (" + p.price + ")").join(", "),
+            order.total,
+            order.deliveryFee,
+            order.finalTotal,
+            order.pointsBalance,
+            order.time
+          ]]
+        }
+      });
+      console.log("✅ الطلبية تسجلت في Google Sheets");
+    } catch (err) {
+      console.error("❌ خطأ في تسجيل الطلبية في Google Sheets:", err.message);
+    }
+
+    // ✅ الرد المباشر JSON
+    res.send({
+      status: "success",
+      orderId,
+      deliveryFee,
+      finalTotal: order.finalTotal,
+      newBalance: currentPoints
+    });
+
+  } catch (err) {
+    console.error("❌ خطأ في معالجة الطلبية:", err.message);
+    res.status(500).send({ error: "خطأ في معالجة الطلبية" });
+  }
+});
 
     // ✅ الرد المباشر JSON
     res.send({
