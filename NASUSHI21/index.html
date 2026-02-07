@@ -613,6 +613,7 @@ async function confirmOrder(event){
   
  // 📝 نطبع الطلبية في كونسول المتصفح
     console.log("📤 نرسل الطلبية للسيرفر:", order);
+    console.log("📤 نرسل الطلبية للسيرفر:", JSON.stringify(order, null, 2));
  
   try {
     const response = await fetch("https://nasushi-backend.onrender.com/order", {
@@ -624,6 +625,7 @@ async function confirmOrder(event){
     const result = await response.json();
 // 📝 نطبع الرد في كونسول المتصفح
     console.log("📥 رد السيرفر:", result);
+    console.log("📥 رد السيرفر:", JSON.stringify(result, null, 2));
 
     if(result.status === "success"){
       alert(`✅ تم إرسال الطلب! رقم الطلب: ${result.orderId}`);
