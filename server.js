@@ -134,11 +134,20 @@ app.post("/order", async (req, res) => {
           phone = "+213" + phone.substring(1);
         }
 
-        await client.messages.create({
-          from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER,
-          to: "whatsapp:" + phone,
-          body: `طلب جديد من ${order.name} 📦\nالمنتجات: ${order.products.map(p => p.name).join(", ")}\nالمجموع: ${order.finalTotal} DA\nرقم الطلب: ${orderId}`
-        });
+      
+        // للزبون
+await client.messages.create({
+  from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER,
+  to: "whatsapp:" + phone,
+  body: `✅ طلبك تسجل بنجاح! رقم الطلب: ${orderId}\nالمجموع: ${order.finalTotal} DA`
+});
+
+// ليك أنت (الإشعار الداخلي)
+await client.messages.create({
+  from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER,
+  to: "whatsapp:+213XXXXXXXXX", // رقمك
+  body: `📥 طلب جديد من ${order.name} (${order.phone})\nالمنتجات: ${order.products.map(p => p.name + " - " + p.filling).join(", ")}\nالمجموع: ${order.finalTotal} DA\nرقم الطلب: ${orderId}`
+});
         console.log("✅ رسالة واتساب تبعثت بنجاح");
       } catch (err) {
         console.error("❌ خطأ في إرسال واتساب:", err.message);
@@ -157,7 +166,7 @@ app.post("/order", async (req, res) => {
             order.name,
             order.phone,
             order.area,
-            order.products.map(p => p.name + " (" + p.price + ")").join(", "),
+            order.products.map(p => p.name + " - " + p.filling + " (" + p.price + " DA)").join(", ")
             order.total,
             order.deliveryFee,
             order.finalTotal,
