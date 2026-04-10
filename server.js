@@ -145,7 +145,7 @@ await client.messages.create({
 // ليك أنت (الإشعار الداخلي)
 await client.messages.create({
   from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER,
-  to: "whatsapp:+213XXXXXXXXX", // رقمك
+  to: "whatsapp:+213792106084", // رقمك
   body: `📥 طلب جديد من ${order.name} (${order.phone})\nالمنتجات: ${order.products.map(p => p.name + " - " + p.filling).join(", ")}\nالمجموع: ${order.finalTotal} DA\nرقم الطلب: ${orderId}`
 });
         console.log("✅ رسالة واتساب تبعثت بنجاح");
@@ -166,7 +166,7 @@ await client.messages.create({
             order.name,
             order.phone,
             order.area,
-            order.products.map(p => p.name + " - " + p.filling + " (" + p.price + " DA)").join(", ")
+            order.products.map(p => p.name + " - " + p.filling + " (" + p.price + " DA)").join(", "),
             order.total,
             order.deliveryFee,
             order.finalTotal,
