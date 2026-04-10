@@ -73,7 +73,7 @@ app.post("/order", (req, res) => {
 
   // 📲 إرسال الطلب لواتساب
   client.messages.create({
-    from: "whatsapp:+14155238886", // رقم Sandbox
+    from: "whatsapp: +18179694333", // رقم Sandbox
     to: "whatsapp:+213792106084",  // رقمك بصيغة دولية
     body: `طلب جديد 🛒
 🆔 رقم الطلب: ${order.id}
