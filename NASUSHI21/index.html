@@ -412,107 +412,126 @@
     en: {title:"NA_SUSHI_21 - Japanese Food", cartTitle:"🛒 Shopping Cart", cartTotal:"Total: ", formTitle:"📝 Customer Information", confirmBtn:"Confirm Order", notification:"✅ Your order has been placed: ", points:"Your loyalty points: "}
   };
 
-  function updatePrice(item, choice) {
-    let price = 0;
-    if(item === "California Roll"){
-      if(choice === "THON") price = 1090T;
-      else if(choice === "POULET CRISPY") price = 1190P;
-      else if(choice === "VEGITARIEEN") price = 1190VE;
-      else if(choice === "CREVETTE") price = 1390C;
-      else if(choice === "SAUMON") price = 1390SA;
-      else if(choice === "SURIMI") price = 1390SU;
-    }
-    if(item === "Crispy Roll"){
-      if(choice === "THON") price = 1140T;
-      else if(choice === "POULET CRISPY") price = 1240P;
-      else if(choice === "CREVETTE") price = 1440C;
-      else if(choice === "SAUMON") price = 1440SA;
-      else if(choice === "SURIMI") price = 1440SU;
-    }
-    if(item === "Futomaki"){
-      if(choice === "THON") price = 1090T;
-      else if(choice === "POULET CRISPY") price = 1190P;
-      else if(choice === "CREVETTE") price = 1390C;
-      else if(choice === "VEGITARIEEN") price = 1190VE;
-      else if(choice === "SAUMON") price = 1390SA;
-      else if(choice === "SURIMI") price = 1390SU;
-    }
-    if(item === "Hosomaki"){
-      if(choice === "THON") price = 990T;
-      else if(choice === "POULET CRISPY") price = 990P;
-      else if(choice === "CREVETTE") price = 1190C;
-      else if(choice === "AVOCAT") price = 1090A;
-      else if(choice === "SAUMON") price = 1190SA;
-      else if(choice === "SURIMI") price = 1150SU;
-    }
-    if(item === "Dragon Roll"){
-      if(choice === "THON") price = 1690T;
-      else if(choice === "POULET CRISPY") price = 1690P;
-      else if(choice === "CREVETTE") price = 1890C;
-      else if(choice === "SAUMON") price = 1890SA;
-      else if(choice === "SURIMI") price = 1890SU;
-    }
-    if(item === "Nigiri"){
-      if(choice === "CREVETTE") price = 1490C;
-      else if(choice === "SAUMON") price = 1490SA;
-      else if(choice === "AVOCAT") price = 1290A;
-    }
-    if(item === "Gyoza"){
-      if(choice === "POULET") price = 590P;
-      else if(choice === "VIANDE") price = 790VI;
-      else if(choice === "CREVETTE") price = 990C;
-    } 
-    if(item === "Crunchy Roll"){
-      if(choice === "THON") price = 1140T;
-      else if(choice === "POULET CRISPY") price = 1240P;
-      else if(choice === "CREVETTE") price = 1440C;
-      else if(choice === "SAUMON") price = 1440SA;
-      else if(choice === "SURIMI") price = 1440SU;
-    }
-    if(item === "Futomaki chesse"){
-      if(choice === "THON") price = 1190T;
-      else if(choice === "POULET CRISPY") price = 1290P;
-      else if(choice === "VEGITARIEEN") price = 1290VE;
-      else if(choice === "CREVETTE") price = 1490C;
-      else if(choice === "SAUMON") price = 1490SA;
-      else if(choice === "SURIMI") price = 1490SU;
-    }
-    if(item === "California roll chesse"){
-      if(choice === "THON") price = 1190T;
-      else if(choice === "POULET CRISPY") price = 1290P;
-      else if(choice === "VEGITARIEEN") price = 1290VE;
-      else if(choice === "CREVETTE") price = 1490C;
-      else if(choice === "SAUMON") price = 1490SA;
-      else if(choice === "SURIMI") price = 1490SU;
-    }
-    if(item === "Les Nems"){
-      if(choice === "POULET") price = 690P;
-      else if(choice === "VIANDE") price = 890VI;
-    } 
-    if(item === "Les Sauces"){
-      if(choice === "SOYA SAUCE SALE") price = 50SOYSA;
-      else if(choice === "SOJA SAUCE SUCRE") price = 100SOJSU;
-      else if(choice === "SPICY MAYO") price = 100SPICY;
-      else if(choice === "CHILI GARLIC OIL") price = 100CHILI;
-    }
-    if(item === "Chop Sticks"){
-      if(choice === "1 CHOP STICKS") price = 50;
-    }
-    document.getElementById(item+"-price").innerText = "السعر: " + price + " DA";
-    selectedPrices[item] = price;
+ function updatePrice(item, choice) {
+  let price = 0;
+
+  if(item === "California Roll"){
+    if(choice === "THON") price = 1090;
+    else if(choice === "POULET CRISPY") price = 1190;
+    else if(choice === "VEGITARIEEN") price = 1190;
+    else if(choice === "CREVETTE") price = 1390;
+    else if(choice === "SAUMON") price = 1390;
+    else if(choice === "SURIMI") price = 1390;
   }
 
-
-  function addToCart(item){
-    let price = selectedPrices[item];
-    if(!price || price === 0){
-      alert("⚠️ اختر الحشو أولاً!");
-      return;
-    }
-    cart.push({name:item, price:price});
-    updateCart();
+  if(item === "Crispy Roll"){
+    if(choice === "THON") price = 1140;
+    else if(choice === "POULET CRISPY") price = 1240;
+    else if(choice === "CREVETTE") price = 1440;
+    else if(choice === "SAUMON") price = 1440;
+    else if(choice === "SURIMI") price = 1440;
   }
 
+  if(item === "Futomaki"){
+    if(choice === "THON") price = 1090;
+    else if(choice === "POULET CRISPY") price = 1190;
+    else if(choice === "CREVETTE") price = 1390;
+    else if(choice === "VEGITARIEEN") price = 1190;
+    else if(choice === "SAUMON") price = 1390;
+    else if(choice === "SURIMI") price = 1390;
+  }
+
+  if(item === "Hosomaki"){
+    if(choice === "THON") price = 990;
+    else if(choice === "POULET CRISPY") price = 990;
+    else if(choice === "CREVETTE") price = 1190;
+    else if(choice === "AVOCAT") price = 1090;
+    else if(choice === "SAUMON") price = 1190;
+    else if(choice === "SURIMI") price = 1150;
+  }
+
+  if(item === "Dragon Roll"){
+    if(choice === "THON") price = 1690;
+    else if(choice === "POULET CRISPY") price = 1690;
+    else if(choice === "CREVETTE") price = 1890;
+    else if(choice === "SAUMON") price = 1890;
+    else if(choice === "SURIMI") price = 1890;
+  }
+
+  if(item === "Nigiri"){
+    if(choice === "CREVETTE") price = 1490;
+    else if(choice === "SAUMON") price = 1490;
+    else if(choice === "AVOCAT") price = 1290;
+  }
+
+  if(item === "Gyoza"){
+    if(choice === "POULET") price = 590;
+    else if(choice === "VIANDE") price = 790;
+    else if(choice === "CREVETTE") price = 990;
+  }
+
+  if(item === "Crunchy Roll"){
+    if(choice === "THON") price = 1140;
+    else if(choice === "POULET CRISPY") price = 1240;
+    else if(choice === "CREVETTE") price = 1440;
+    else if(choice === "SAUMON") price = 1440;
+    else if(choice === "SURIMI") price = 1440;
+  }
+
+  if(item === "Futomaki chesse"){
+    if(choice === "THON") price = 1190;
+    else if(choice === "POULET CRISPY") price = 1290;
+    else if(choice === "VEGITARIEEN") price = 1290;
+    else if(choice === "CREVETTE") price = 1490;
+    else if(choice === "SAUMON") price = 1490;
+    else if(choice === "SURIMI") price = 1490;
+  }
+
+  if(item === "California roll chesse"){
+    if(choice === "THON") price = 1190;
+    else if(choice === "POULET CRISPY") price = 1290;
+    else if(choice === "VEGITARIEEN") price = 1290;
+    else if(choice === "CREVETTE") price = 1490;
+    else if(choice === "SAUMON") price = 1490;
+    else if(choice === "SURIMI") price = 1490;
+  }
+
+  if(item === "Les Nems"){
+    if(choice === "POULET") price = 690;
+    else if(choice === "VIANDE") price = 890;
+  }
+
+  if(item === "Les Sauces"){
+    if(choice === "SOYA SAUCE SALE") price = 50;
+    else if(choice === "SOJA SAUCE SUCRE") price = 100;
+    else if(choice === "SPICY MAYO") price = 100;
+    else if(choice === "CHILI GARLIC OIL") price = 100;
+  }
+
+  if(item === "Chop Sticks"){
+    if(choice === "1 CHOP STICKS") price = 50;
+  }
+
+  // نخزن السعر + الحشو المختار
+  selectedPrices[item] = { price: price, choice: choice };
+
+  document.getElementById(item+"-price").innerText =
+    "السعر: " + price + " DA (" + choice + ")";
+}
+
+function addToCart(item){
+  let selected = selectedPrices[item];
+  if(!selected || selected.price === 0){
+    alert("⚠️ اختر الحشو أولاً!");
+    return;
+  }
+  cart.push({
+    name: item,
+    filling: selected.choice, // نفرق بين الحشوات
+    price: selected.price
+  });
+  updateCart();
+}
   function removeItem(index){
     cart.splice(index,1);
     updateCart();
